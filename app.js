@@ -1,25 +1,18 @@
 const express = require("express");
-const routeModules = require("./modules");
+const morgan = require("morgan");
+const routerPosts = require("./routes/postRoutes");
+const routerUsers = require("./routes/userRoutes");
 
 const app = express();
 
 //middleware
+// app.use(express.static(``));
 app.use(express.json());
 
-//routes
-app
-  .route("/api/v1/posts")
-  .get(routeModules.getAllPosts)
-  .post(routeModules.createPost);
+if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 
-app
-  .route("/api/v1/posts/:id")
-  .get(routeModules.getPost)
-  .patch(routeModules.updatePieceOfPost)
-  .put(routeModules.updatePost)
-  .delete(routeModules.deletePost);
+//router
+app.use("/api/v1/posts", routerPosts);
+app.use("/api/v1/users", routerUsers);
 
-const port = 3000;
-app.listen(port, () => {
-  console.log(`App is listening port ${port}`);
-});
+module.exports = app;

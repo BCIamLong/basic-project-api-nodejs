@@ -1,12 +1,32 @@
 const fs = require("fs");
-const posts = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data.json`));
+const posts = JSON.parse(
+  fs.readFileSync(`${__dirname}/../dev-data/posts.json`)
+);
 
-const getAllPosts = (req, res) => {
+const checkID = (req, res, next, val) => {
+  if (val > posts.length)
+    return res.status(400).json({ status: "Fails", message: "Invalid id" });
+
+  next();
+};
+const checkPosts = (req, res, next) => {
   if (!posts)
-    res.status(404).json({
+    return res.status(404).json({
       status: "Faild",
       message: "Not posts exits",
     });
+  next();
+};
+const checkReqBody = (req, res, next) => {
+  if (JSON.stringify(req.body) === "{}" || !req.body.name)
+    return res.status(400).json({
+      status: "Fails",
+      message: "Missing data, fill all data and try again please",
+    });
+  next();
+};
+
+const getAllPosts = (req, res) => {
   res.status(200).json({
     status: "Success",
     data: {
@@ -22,7 +42,7 @@ const createPost = (req, res) => {
   posts.push(newPost);
 
   fs.writeFile(
-    `${__dirname}/dev-data/data.json`,
+    `${__dirname}/../dev-data/posts.json`,
     JSON.stringify(posts),
     (err) => {
       if (err)
@@ -42,11 +62,12 @@ const createPost = (req, res) => {
 const getPost = (req, res) => {
   const id = +req.params.id;
   const post = posts.find((el) => el.id === id);
-  if (!post)
-    res.status(404).json({
-      status: "Faild",
-      message: "Post not found",
-    });
+  console.log(posts.find((el) => el.id === id));
+  //   if (!post)
+  //     res.status(404).json({
+  //       status: "Faild",
+  //       message: "Post not found",
+  //     });
   res.status(200).json({
     status: "Success",
     data: {
@@ -64,7 +85,7 @@ const updatePieceOfPost = (req, res) => {
 
   posts[indexUpdate] = postUpdate;
   fs.writeFile(
-    `${__dirname}/dev-data/data.json`,
+    `${__dirname}/../dev-data/posts.json`,
     JSON.stringify(posts),
     (err) => {
       if (err)
@@ -90,7 +111,7 @@ const updatePost = (req, res) => {
   posts[indexUpdate] = post;
 
   fs.writeFile(
-    `${__dirname}/dev-data/data.json`,
+    `${__dirname}/../dev-data/posts.json`,
     JSON.stringify(posts),
     (err) => {
       if (err)
@@ -114,7 +135,7 @@ const deletePost = (req, res) => {
 
   posts.splice(index, 1);
   fs.writeFile(
-    `${__dirname}/dev-data/data.json`,
+    `${__dirname}/../dev-data/posts.json`,
     JSON.stringify(posts),
     (err) => {
       if (err)
@@ -137,4 +158,7 @@ module.exports = {
   updatePieceOfPost,
   updatePost,
   deletePost,
+  checkID,
+  checkPosts,
+  checkReqBody,
 };
