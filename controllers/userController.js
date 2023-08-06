@@ -1,137 +1,122 @@
-const { json } = require("express");
-const fs = require("fs");
+const User = require("../models/userModel");
 
-const users = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/users.json`)
-);
+const getAllUsers = async (_, res) => {
+  try {
+    const users = await User.find();
 
-//function middleware validation
-const checkID = (req, res, next, val) => {
-  if (val > users.length)
+    res.status(200).json({
+      status: "Success",
+      data: {
+        users,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "Fails",
+      message: "Users data not found",
+      error: err,
+    });
+  }
+};
+const getUser = async (req, res) => {
+  try {
+    console.log(req.params.id);
+    const user = await User.findById(req.params.id);
+
+    res.status(200).json({
+      status: "Success",
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: "Fails",
+      message: "User data not found",
+      error: err,
+    });
+  }
+};
+const createUser = async (req, res) => {
+  try {
+    const user = await User.create(req.body);
+
+    res.status(201).json({
+      status: "Success",
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fails",
+      message: "Data invalid",
+      error: err,
+    });
+  }
+};
+const checkReqBodyStringType = (req, res, next) => {
+  if (req.body.userName && typeof req.body.userName !== "string")
     return res.status(400).json({
+      status: "Fails",
+      message: "Data invalid",
+    });
+  if (req.body.name && typeof req.body.name !== "string")
+    return res.status(400).json({
+      status: "Fails",
+      message: "Data invalid",
+    });
+  if (req.body.email && typeof req.body.email !== "string")
+    return res.status(400).json({
+      status: "Fails",
+      message: "Data invalid",
+    });
+
+  next();
+};
+const updateUser = async (req, res) => {
+  try {
+    console.log(typeof req.body.name);
+    //The schema validate doesn't check type for String in this case i set name = 1(number) but it's still pass so to do it you need create middleware to check for this
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      returnDocument: "after",
+      runValidators: true,
+    });
+    res.status(200).json({
+      status: "Success",
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "Fails",
+      message: "Data invalid",
+      error: err,
+    });
+  }
+};
+const deleteUser = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      status: "Success",
+      data: null,
+    });
+  } catch (err) {
+    res.status(400).json({
       status: "Fails",
       message: "Invalid id",
+      error: err,
     });
-
-  next();
-};
-
-const checkReqBody = (req, res, next) => {
-  if (JSON.stringify(req.body) === "{}" || !req.body.name)
-    return res.status(400).json({
-      status: "Fails",
-      message: "Missing data, fill all data and try again please",
-    });
-  next();
-};
-const checkUsers = (req, res, next) => {
-  if (!users)
-    return res.status(404).json({
-      status: "Fails",
-      message: "Users don't have data",
-    });
-  next();
-};
-
-const getAllUsers = (req, res) => {
-  res.status(200).json({
-    status: "Success",
-    data: {
-      users,
-    },
-  });
-};
-const getUser = (req, res) => {
-  const id = +req.params.id;
-  const user = users.find((el) => el.id === id);
-
-  res.status(200).json({
-    status: "Success",
-    data: {
-      user,
-    },
-  });
-};
-const createUser = (req, res) => {
-  const id = +req.params.id;
-
-  const user = Object.assign({ id }, req.body);
-
-  users.push(user);
-  fs.writeFile(
-    `${__dirname}/../dev-data/user.json`,
-    JSON.stringify(users),
-    (err) => {
-      if (err)
-        return res.status(404).json({
-          status: "Fails",
-          message: "Can't create user",
-        });
-
-      res.status(201).json({
-        status: "Success",
-        data: {
-          user,
-        },
-      });
-    }
-  );
-};
-const updateUser = (req, res) => {
-  const id = +req.params.id;
-  const userIndex = users.findIndex((el) => el.id === id);
-  const userUpdate = Object.assign({ id }, req.body);
-
-  users[userIndex] = userUpdate;
-  fs.writeFile(
-    `${__dirname}/../dev-data/user.json`,
-    JSON.stringify(users),
-    (err) => {
-      if (err)
-        return res.status(404).json({
-          status: "Fails",
-          message: "Can't create user",
-        });
-
-      res.status(200).json({
-        status: "Success",
-        data: {
-          userUpdate,
-        },
-      });
-    }
-  );
-};
-const deleteUser = (req, res) => {
-  const id = +req.params.id;
-  const userIndex = users.findIndex((el) => el.id === id);
-
-  users.splice(userIndex, 1);
-  fs.writeFile(
-    `${__dirname}/../dev-data/user.json`,
-    JSON.stringify(users),
-    (err) => {
-      if (err)
-        return res.status(404).json({
-          status: "Fails",
-          message: "Can't create user",
-        });
-
-      res.status(204).json({
-        status: "Success",
-        data: null,
-      });
-    }
-  );
+  }
 };
 
 module.exports = {
-  checkID,
-  checkReqBody,
   getAllUsers,
   getUser,
   createUser,
   updateUser,
   deleteUser,
-  checkUsers,
+  checkReqBodyStringType,
 };
