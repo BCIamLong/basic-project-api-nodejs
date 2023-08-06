@@ -1,19 +1,21 @@
 const express = require("express");
 const {
-  checkID,
-  checkReqBody,
   getAllUsers,
   getUser,
   createUser,
   updateUser,
   deleteUser,
-  checkUsers,
+  checkReqBodyStringType,
 } = require("./../controllers/userController");
 const router = express.Router();
 
-router.param("id", checkID);
+// router.param("id", checkID);
 
-router.route("/").get(checkUsers, getAllUsers).post(checkReqBody, createUser);
-router.route("/:id").get(getUser).patch(updateUser).delete(deleteUser);
+router.route("/").get(getAllUsers).post(createUser);
+router
+  .route("/:id")
+  .get(getUser)
+  .patch(checkReqBodyStringType, updateUser)
+  .delete(deleteUser);
 
 module.exports = router;
