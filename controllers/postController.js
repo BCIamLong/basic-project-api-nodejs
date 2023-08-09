@@ -143,6 +143,20 @@ const deletePost = async (req, res) => {
   }
 };
 
+//Alias route for top 5 more likes and more shares hot posts
+const aliasTop5MoreLikesPosts = (req, res, next) => {
+  req.query.limit = 5;
+  req.query.sort = '-likes';
+
+  next();
+};
+const aliasTop5MoreSharesPosts = (req, res, next) => {
+  req.query.limit = 5;
+  req.query.sort = '-shares';
+
+  next();
+};
+
 module.exports = {
   getAllPosts,
   createPost,
@@ -151,4 +165,6 @@ module.exports = {
   updatePost,
   deletePost,
   checkReqBodyStringType,
+  aliasTop5MoreLikesPosts,
+  aliasTop5MoreSharesPosts,
 };
