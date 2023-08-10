@@ -9,6 +9,7 @@ const {
   checkReqBodyStringType,
   aliasTop5MoreLikesPosts,
   aliasTop5MoreSharesPosts,
+  getPostsStats,
 } = require('./../controllers/postController');
 
 const router = express.Router();
@@ -24,6 +25,9 @@ router
   .route('/top-5-more-shares-posts')
   .get(aliasTop5MoreSharesPosts, getAllPosts);
 // router.param("id", checkID);
+
+//Statistics of post by author
+router.route('/posts-stats').get(getPostsStats);
 
 router.route('/').get(getAllPosts).post(createPost);
 router
