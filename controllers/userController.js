@@ -111,6 +111,51 @@ const deleteUser = async (req, res) => {
     });
   }
 };
+//get users from a ciyt
+//1, convert ob -> arr
+//2, select the city element
+//3, find with this element use condition
+const getUserByCity = async (req, res) => {
+  try {
+    const city = req.params.city;
+    console.log(city);
+    const users = await User.aggregate([
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          username: 1,
+          email: 1,
+          phone: 1,
+          address: { $objectToArray: '$address' },
+        },
+      },
+      {
+        $unwind: {
+          path: '$address',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $match: { 'address.k': 'city', 'address.v': `${city}` },
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'Success',
+      data: {
+        users,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'Fails',
+      message: 'Bad request',
+      error: err.message,
+    });
+  }
+};
+
 //Alias route for top 3 users: based on interaction, more likes, shares, sreachs, views,....
 //1, we need embed posts data to users
 //2, we based on posts data to count total likes, shares,  views,  with posts
@@ -123,4 +168,5 @@ module.exports = {
   updateUser,
   deleteUser,
   checkReqBodyStringType,
+  getUserByCity,
 };
