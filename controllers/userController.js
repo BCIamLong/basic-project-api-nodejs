@@ -1,11 +1,17 @@
 const User = require('../models/userModel');
+const APIFeature = require('../utils/apiFeatures');
 
-const getAllUsers = async (_, res) => {
+const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
-
+    const count = await User.countDocuments({});
+    const apiFeatures = new APIFeature(User.find(), req.query)
+      .sort()
+      .select()
+      .pagination(count);
+    const users = await apiFeatures.query;
     res.status(200).json({
       status: 'Success',
+      results: users.length,
       data: {
         users,
       },
@@ -22,7 +28,7 @@ const getUser = async (req, res) => {
   try {
     console.log(req.params.id);
     const user = await User.findById(req.params.id);
-
+    console.log(`Companny info: ${user.compannyInfo}`);
     res.status(200).json({
       status: 'Success',
       data: {

@@ -9,7 +9,6 @@ const getAllPosts = async (req, res) => {
       .select()
       .pagination(count);
     const posts = await apiFeatures.query;
-
     res.status(200).json({
       status: 'Success',
       data: {
@@ -46,7 +45,7 @@ const createPost = async (req, res) => {
 const getPost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
-
+    // console.log(`The interact of this post is: ${post.interact}`);
     res.status(200).json({
       status: 'Success',
       data: {
@@ -57,7 +56,7 @@ const getPost = async (req, res) => {
     res.status(404).json({
       status: 'Fails',
       message: 'post data not found',
-      error: err,
+      error: err.message,
     });
   }
 };
@@ -122,7 +121,7 @@ const updatePost = async (req, res) => {
     res.status(400).json({
       status: 'Fails',
       message: 'Data invalid',
-      error: err,
+      error: err.message,
     });
   }
 };
