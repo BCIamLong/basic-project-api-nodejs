@@ -5,10 +5,31 @@ const {
   createUser,
   updateUser,
   deleteUser,
-  checkReqBodyStringType,
+  // checkReqBodyStringType,
   getUserByCity,
-} = require('./../controllers/userController');
+  updateMe,
+  deleteMe,
+} = require('../controllers/userController');
+const {
+  signup,
+  login,
+  forgotPassword,
+  resetPassword,
+  updatePassword,
+  protect,
+} = require('../controllers/authController');
+
 const router = express.Router();
+
+router.patch('/update-me', protect, updateMe);
+router.delete('/delete-me', protect, deleteMe);
+
+router.patch('/update-password', protect, updatePassword);
+router.post('/forgot-password', forgotPassword);
+router.patch('/reset-password/:token', resetPassword);
+
+router.post('/signup', signup);
+router.post('/login', login);
 
 //Alias top 3 users hot
 router.route('/top-3-hot-users').get(getAllUsers);

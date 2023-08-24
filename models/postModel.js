@@ -8,7 +8,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A post mush have a title'],
       trim: true,
-      maxLength: 60,
+      maxLength: 300,
       minLength: 10,
     },
     content: {
@@ -34,7 +34,8 @@ const postSchema = new mongoose.Schema(
       default: 0,
       validate: {
         validator: function (val) {
-          return val >= 0 && val <= this.viewers;
+          return val >= 0;
+          //  && val <= this.viewers;
         },
         message: 'Likes must to positive number and less than viewers',
       },
@@ -43,14 +44,14 @@ const postSchema = new mongoose.Schema(
       type: String,
       default: '',
       trim: true,
-      minLength: 1,
     },
     shares: {
       type: Number,
       default: 0,
       validate: {
         validator: function (val) {
-          return val >= 0 && val <= this.viewers;
+          return val >= 0;
+          // && val <= this.viewers;
         },
         message: 'Shares must to the positive number and less than viewers',
       },
@@ -60,7 +61,9 @@ const postSchema = new mongoose.Schema(
       default: 0,
       validate: {
         validator: function (val) {
-          return val >= this.likes && val >= this.shares;
+          return val >= 0;
+          //this.likes;
+          // && val >= this.shares;
         },
         message: 'Viewers must to greater than equals likes and shares',
       },
@@ -69,12 +72,12 @@ const postSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
       select: false,
-      validate: {
-        validator: function (val) {
-          return val >= Date.now();
-        },
-        message: 'Date must to greater than equal the current time',
-      },
+      // validate: {
+      //   validator: function (val) {
+      //     return val >= Date.now();
+      //   },
+      //   message: 'Date must to greater than equal the current time',
+      // },
     },
   },
   {
@@ -103,14 +106,14 @@ postSchema.post('save', function (docs, next) {
 postSchema.pre(/^find/, function (next) {
   //do some thing before we really run query in await
   //! all thing you do in this effect to query method as: findByIdAndUpdate, find,....
-  console.log('This is query middleware');
+  // console.log('This is query middleware');
 
   // this.limit(3); limit() dont use for find and update so it'll error notice when we manipulate more events in the same middleware
   next();
 });
 
 postSchema.post(/^find/, function (docs, next) {
-  console.log(docs);
+  // console.log(docs);
   next();
 });
 

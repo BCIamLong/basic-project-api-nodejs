@@ -6,11 +6,12 @@ const {
   updatePieceOfPost,
   updatePost,
   deletePost,
-  checkReqBodyStringType,
+  // checkReqBodyStringType,
   aliasTop5MoreLikesPosts,
   aliasTop5MoreSharesPosts,
   getPostsStats,
-} = require('./../controllers/postController');
+} = require('../controllers/postController');
+const { protect, restrictTo } = require('../controllers/authController');
 
 const router = express.Router();
 
@@ -27,14 +28,16 @@ router
 // router.param("id", checkID);
 
 //Statistics of post by author
-router.route('/posts-stats').get(getPostsStats);
+router
+  .route('/posts-stats')
+  .get(protect, restrictTo('admin', 'manager'), getPostsStats);
 
-router.route('/').get(getAllPosts).post(createPost);
+router.route('/').get(protect, getAllPosts).post(protect, createPost);
 router
   .route('/:id')
   .get(getPost)
-  .patch(checkReqBodyStringType, updatePieceOfPost)
+  .patch(protect, updatePieceOfPost)
   .put(updatePost)
-  .delete(deletePost);
+  .delete(protect, deletePost);
 
 module.exports = router;
