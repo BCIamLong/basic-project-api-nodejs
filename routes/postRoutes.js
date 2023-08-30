@@ -1,4 +1,5 @@
 const express = require('express');
+const commentRouter = require('./commentRouter');
 const {
   getAllPosts,
   createPost,
@@ -14,6 +15,8 @@ const {
 const { protect, restrictTo } = require('../controllers/authController');
 
 const router = express.Router();
+
+router.use('/:postId/comments', commentRouter);
 
 //Alias route
 //1,top 5 more likes posts

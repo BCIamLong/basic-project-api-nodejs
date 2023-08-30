@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please fill your name'],
       trim: true,
-      minLength: 10,
+      // minLength: 10,
       maxLength: 30,
     },
     username: {
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please fill your username'],
       unique: true,
       trim: true,
-      minLength: 10,
+      // minLength: 1,
       maxLength: 30,
     },
     email: {
@@ -29,6 +29,11 @@ const userSchema = new mongoose.Schema(
       //* you can also use regex to validate data
       // match:
       //   /^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|.(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/,
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin', 'manager'],
+      default: 'user',
     },
     password: {
       type: String,
@@ -67,6 +72,10 @@ const userSchema = new mongoose.Schema(
       ],
       trim: true,
     },
+    photo: {
+      type: String,
+      default: 'default_user_photo.jpg',
+    },
     website: {
       type: String,
       trim: true,
@@ -84,9 +93,13 @@ const userSchema = new mongoose.Schema(
       default: true,
     },
     reasonDeleleAccount: String,
+    joinedAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   {
-    toJSON: { virtuals: true },
+    // toJSON: { virtuals: true },
   },
 );
 

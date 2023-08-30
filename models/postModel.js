@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
+// const validator = require('validator');
 
 const postSchema = new mongoose.Schema(
   {
@@ -16,13 +16,6 @@ const postSchema = new mongoose.Schema(
       required: [true, 'A post must have a content'],
       trim: true,
       minLength: 10,
-    },
-    author: {
-      type: String,
-      unique: true,
-      trim: true,
-      minLength: 1,
-      maxLength: 21,
     },
     image: {
       type: String,
@@ -79,12 +72,16 @@ const postSchema = new mongoose.Schema(
       //   message: 'Date must to greater than equal the current time',
       // },
     },
+    author: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+    },
   },
   {
     //*why we need it for virtual:https://mongoosejs.com/docs/tutorials/virtuals.html#virtuals-in-json
     toJSON: { virtuals: true },
     // toObject: true,
-  }
+  },
 );
 //DOCs middleware: use save, remove, update
 postSchema.pre('save', function (next) {
@@ -96,11 +93,11 @@ postSchema.pre('save', function (next) {
   next();
 });
 
-postSchema.post('save', function (docs, next) {
-  console.log('Add data success');
-  // console.log(docs);
-  next();
-});
+// postSchema.post('save', function (docs, next) {
+//   console.log('Add data success');
+//   // console.log(docs);
+//   next();
+// });
 
 //Query middleware
 postSchema.pre(/^find/, function (next) {
@@ -109,13 +106,16 @@ postSchema.pre(/^find/, function (next) {
   // console.log('This is query middleware');
 
   // this.limit(3); limit() dont use for find and update so it'll error notice when we manipulate more events in the same middleware
+  this.spopulate({ path: 'author', select: 'name username photo' }).populate(
+    'comments',
+  );
   next();
 });
 
-postSchema.post(/^find/, function (docs, next) {
-  // console.log(docs);
-  next();
-});
+// postSchema.post(/^find/, function (docs, next) {
+//   // console.log(docs);
+//   next();
+// });
 
 //* https://mongoosejs.com/docs/middleware.html#aggregate
 postSchema.pre('aggregate', function (next) {
@@ -125,17 +125,23 @@ postSchema.pre('aggregate', function (next) {
   next();
 });
 
-postSchema.post('aggregate', function (docs, next) {
-  console.log(docs);
-  console.log('Aggregation pipeline success');
-  next();
-});
+// postSchema.post('aggregate', function (docs, next) {
+//   console.log(docs);
+//   console.log('Aggregation pipeline success');
+//   next();
+// });
 
 //create interact virtual property
 postSchema.virtual('interact').get(function () {
   return (this.likes + this.shares) / 2;
 });
 
-const Post = new mongoose.model('Post', postSchema);
+postSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'post',
+});
+
+const Post = mongoose.model('Post', postSchema);
 
 module.exports = Post;

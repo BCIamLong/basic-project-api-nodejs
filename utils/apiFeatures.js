@@ -8,7 +8,7 @@ class APIFeature {
     const queryOb = { ...this.queryStr };
     //*1, clear options: field, page, limit, sort
     const options = ['fields', 'page', 'limit', 'sort'];
-    options.forEach((el) => delete queryOb[el]);
+    options.forEach(el => delete queryOb[el]);
     // options.forEach((el) => {
     //   if (queryOb[el]) delete queryOb[el];
     // });
@@ -21,7 +21,7 @@ class APIFeature {
     //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace: read this
     operatorStr = operatorStr.replace(
       /\b(gte|lte|gt|lt)\b/g,
-      (match) => `$${match}` // call back function use for change all value if it's match
+      match => `$${match}`, // call back function use for change all value if it's match
     );
     //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll read this
     // operatorStr = operatorStr.replaceAll(/\b(gte|lte|gt|lt)\b/g, `$${match}`);

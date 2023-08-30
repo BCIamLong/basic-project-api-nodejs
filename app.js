@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const routerPosts = require('./routes/postRoutes');
 const routerUsers = require('./routes/userRoutes');
+const routerComments = require('./routes/commentRouter');
 const AppError = require('./utils/appError');
 const errorHanler = require('./middlewares/error');
 
@@ -35,6 +36,7 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 //router
 app.use('/api/v1/posts', routerPosts);
 app.use('/api/v1/users', routerUsers);
+app.use('/api/v1/comments', routerComments);
 
 // handle for not defined route
 app.all('*', (req, res, next) => {
