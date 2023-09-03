@@ -33,10 +33,9 @@ const postSchema = new mongoose.Schema(
         message: 'Likes must to positive number and less than viewers',
       },
     },
-    comment: {
-      type: String,
-      default: '',
-      trim: true,
+    commentQuantity: {
+      type: Number,
+      default: 0,
     },
     shares: {
       type: Number,
@@ -83,15 +82,24 @@ const postSchema = new mongoose.Schema(
     // toObject: true,
   },
 );
-//DOCs middleware: use save, remove, update
-postSchema.pre('save', function (next) {
-  //you can check data needed get from DB, check username exits? phone exits?...this is validation
-  //some reason you fogot add field you can do it(maybe not use in real)
-  this.viewers = (this.likes + this.shares) * 10;
-  // console.log(this);
 
-  next();
-});
+//* create index for commenQuantity, compound index for viewer and likes
+
+postSchema.index({ author: 1 }); //! for get All posts of author, this action always occurs many times
+
+postSchema.index({ commentQuantity: 1 }); //! filter most comments or less comments,...
+
+postSchema.index({ likes: 1, viewers: -1 }); //! filter likes, views or views and likes(most or less),...
+
+//DOCs middleware: use save, remove, update
+// postSchema.pre('save', function (next) {
+//   //you can check data needed get from DB, check username exits? phone exits?...this is validation
+//   //some reason you fogot add field you can do it(maybe not use in real)
+//   this.viewers = (this.likes + this.shares) * 10;
+//   // console.log(this);
+
+//   next();
+// });
 
 // postSchema.post('save', function (docs, next) {
 //   console.log('Add data success');
@@ -100,18 +108,29 @@ postSchema.pre('save', function (next) {
 // });
 
 //Query middleware
-postSchema.pre(/^find/, function (next) {
+postSchema.pre('find', function (next) {
   //do some thing before we really run query in await
   //! all thing you do in this effect to query method as: findByIdAndUpdate, find,....
   // console.log('This is query middleware');
 
   // this.limit(3); limit() dont use for find and update so it'll error notice when we manipulate more events in the same middleware
-  this.spopulate({ path: 'author', select: 'name username photo' }).populate(
+  this.populate({ path: 'author', select: 'name username photo' });
+  next();
+});
+
+postSchema.pre('findOne', function (next) {
+  this.populate({ path: 'author', select: 'name username photo' }).populate(
     'comments',
   );
   next();
 });
 
+//* Increase viewer when we access to getPost:
+//! in here it's not work because we have many query like findById behide is findOne so it's also run this so we need code seperate
+// postSchema.post('findOne', async (doc, next) => {
+//   await doc.constructor.findByIdAndUpdate(doc.id, { viewers: doc.viewers + 1 });
+//   next();
+// });
 // postSchema.post(/^find/, function (docs, next) {
 //   // console.log(docs);
 //   next();
@@ -120,7 +139,7 @@ postSchema.pre(/^find/, function (next) {
 //* https://mongoosejs.com/docs/middleware.html#aggregate
 postSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({
-    $match: { likes: { $gte: 10 } },
+    $match: { likes: { $gte: 0 } },
   });
   next();
 });

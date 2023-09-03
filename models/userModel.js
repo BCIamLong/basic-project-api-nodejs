@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please fill your email'],
       unique: true,
       validate: [validator.isEmail, 'Email must to email type'],
+      select: false,
       //* you can also use regex to validate data
       // match:
       //   /^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|.(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/,
@@ -71,6 +72,7 @@ const userSchema = new mongoose.Schema(
         'Phone number invalid, please check and try again',
       ],
       trim: true,
+      select: false,
     },
     photo: {
       type: String,
@@ -91,6 +93,7 @@ const userSchema = new mongoose.Schema(
     active: {
       type: Boolean,
       default: true,
+      select: false,
     },
     reasonDeleleAccount: String,
     joinedAt: {
@@ -144,7 +147,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.pre(/^find/, function (next) {
-  this.find({ active: { $ne: false } });
+  this.find({ active: { $ne: false } }).select('-__v');
   next();
 });
 

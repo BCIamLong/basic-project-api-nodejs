@@ -1,44 +1,31 @@
 const User = require('../models/userModel');
-const APIFeature = require('../utils/apiFeatures');
+// const APIFeature = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 const asyncCatch = require('../utils/asyncCatch');
+const {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+} = require('./handlerFactory');
 
-const getAllUsers = asyncCatch(async (req, res) => {
-  const count = await User.countDocuments({});
-  const apiFeatures = new APIFeature(User.find(), req.query)
-    .sort()
-    .select()
-    .pagination(count);
-  const users = await apiFeatures.query;
-  res.status(200).json({
-    status: 'Success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-const getUser = asyncCatch(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-  // console.log(`Companny info: ${user.compannyInfo}`);
-  if (!user) return next(new AppError('This user is not exits', 400));
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      user,
-    },
-  });
-});
-const createUser = asyncCatch(async (req, res) => {
-  const user = await User.create(req.body);
+// const setActionGetUser = (req, res, next) => {
+//   req.body.action = 'getUser';
+//   next();
+// };
+const getAllUsers = getAll(User);
+const getUser = getOne(User);
+const createUser = createOne(User);
+const updateUser = updateOne(User);
+const deleteUser = deleteOne(User);
 
-  res.status(201).json({
-    status: 'Success',
-    data: {
-      user,
-    },
-  });
-});
+const setCurrentUserId = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+const getMe = getOne(User);
+
 const checkReqBodyStringType = (req, res, next) => {
   if (req.body.userName && typeof req.body.userName !== 'string')
     return res.status(400).json({
@@ -58,28 +45,6 @@ const checkReqBodyStringType = (req, res, next) => {
 
   next();
 };
-const updateUser = asyncCatch(async (req, res, next) => {
-  //The schema validate doesn't check type for String in this case i set name = 1(number) but it's still pass so to do it you need create middleware to check for this
-  const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-    returnDocument: 'after',
-    runValidators: true,
-  });
-  if (!user) return next(new AppError('This user is not exits', 400));
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      user,
-    },
-  });
-});
-const deleteUser = asyncCatch(async (req, res, next) => {
-  const user = await User.findByIdAndDelete(req.params.id);
-  if (!user) return next(new AppError('This user is not exits', 400));
-  res.status(204).json({
-    status: 'Success',
-    data: null,
-  });
-});
 //get users from a ciyt
 //1, convert ob -> arr
 //2, select the city element
@@ -201,4 +166,7 @@ module.exports = {
   getUserByCity,
   updateMe,
   deleteMe,
+  // setActionGetUser,
+  setCurrentUserId,
+  getMe,
 };

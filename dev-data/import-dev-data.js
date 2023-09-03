@@ -11,13 +11,13 @@ const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`));
 
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
+  process.env.DATABASE_PASSWORD,
 );
 
 mongoose
   .connect(DB)
   .then(() => console.log('DB connect successful'))
-  .catch((err) => console.log(err));
+  .catch(err => console.log(err));
 
 const importData = async (model, data) => {
   try {
@@ -31,7 +31,7 @@ const importData = async (model, data) => {
   process.exit();
 };
 
-const deleteAllData = async (model) => {
+const deleteAllData = async model => {
   try {
     await model.deleteMany();
     console.log('Delete all data success');
@@ -45,7 +45,7 @@ const deleteAllData = async (model) => {
 // console.log(process.argv);
 // importData(posts);
 // deleteAllData();
-if (process.argv[2] === '--import-post') importData(Post, posts);
-if (process.argv[2] === '--delete-post') deleteAllData(Post);
-if (process.argv[2] === '--import-user') importData(User, users);
-if (process.argv[2] === '--delete-user') deleteAllData(User);
+if (process.argv[2] === '--import-posts') importData(Post, posts);
+if (process.argv[2] === '--delete-posts') deleteAllData(Post);
+if (process.argv[2] === '--import-users') importData(User, users);
+if (process.argv[2] === '--delete-users') deleteAllData(User);

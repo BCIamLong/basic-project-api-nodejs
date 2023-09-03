@@ -54,8 +54,9 @@ class APIFeature {
     const limit = +this.queryStr.limit || 10;
     const skip = (page - 1) * limit;
     const totalPages = Math.ceil(count / limit);
+    // console.log(count, count / limit, page, totalPages, page <= totalPages);
     if (page <= totalPages) this.query = this.query.skip(skip).limit(limit);
-    else throw new Error('Page invalid');
+    else throw new Error('No page found');
 
     return this;
   }

@@ -1,51 +1,50 @@
 const Post = require('../models/postModel');
-const APIFeature = require('../utils/apiFeatures');
+// const APIFeature = require('../utils/apiFeatures');
 const asyncCatch = require('../utils/asyncCatch');
 const AppError = require('../utils/appError');
+const {
+  deleteOne,
+  updateOne,
+  createOne,
+  getOne,
+  getAll,
+  checkAliasStatsRoutes,
+} = require('./handlerFactory');
+const User = require('../models/userModel');
 
-const getAllPosts = asyncCatch(async (req, res, next) => {
-  const count = await Post.countDocuments({});
-  const apiFeatures = new APIFeature(Post.find(), req.query)
-    .sort()
-    .select()
-    .pagination(count);
-  const posts = await apiFeatures.query;
-  res.status(200).json({
-    status: 'Success',
-    results: posts.length,
-    data: {
-      posts,
-    },
-  });
+const checkUserId = asyncCatch(async (req, res, next) => {
+  const { userId } = req.params;
+  if (!userId) {
+    req.body.filter = {};
+    return next();
+  }
+  const checkUserExist = await User.findById(userId);
+  if (!checkUserExist)
+    return next(new AppError('No user found with this id', 404));
+  req.body.filter = { author: userId };
+  next();
+});
+const getAllPosts = getAll(Post);
+
+const setUserId = (req, res, next) => {
+  req.body.author = req.user.id;
+  next();
+};
+
+const createPost = createOne(Post);
+
+const calcViewer = asyncCatch(async (req, res, next) => {
+  const { id } = req.params;
+  if (checkAliasStatsRoutes(id)) return next();
+  const post = await Post.findById(id);
+  post.viewers += 1;
+  await post.save();
+  next();
 });
 
-const createPost = asyncCatch(async (req, res, next) => {
-  const post = await Post.create(req.body);
-
-  res.status(201).json({
-    status: 'Success',
-    data: {
-      post,
-    },
-  });
-
-  //if (!post) throw new AppError('Data invalid', 400);
-  //! the errors here not working because mongoDB handler error and overwrite it so we need a nother way to custom error from mongo
-  // if (!post)
-  //   return new Promise((resolve, reject) => {
-  //     reject(new AppError('Data invalid', 400));
-  //   });
-});
-const getPost = asyncCatch(async (req, res, next) => {
-  const post = await Post.findById(req.params.id);
-  if (!post) return next(new AppError('Invalid id', 400));
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      post,
-    },
-  });
-});
+const getPost = getOne(Post);
+const updatePieceOfPost = updateOne(Post);
+const deletePost = deleteOne(Post);
 
 const checkReqBodyStringType = (req, res, next) => {
   if (req.body.title && typeof req.body.title !== 'string')
@@ -66,19 +65,6 @@ const checkReqBodyStringType = (req, res, next) => {
 
   next();
 };
-const updatePieceOfPost = asyncCatch(async (req, res, next) => {
-  const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
-    returnDocument: 'after',
-    runValidators: true,
-  });
-  if (!post) return next(new AppError('Invalid id', 400));
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      post,
-    },
-  });
-});
 
 const updatePost = asyncCatch(async (req, res, next) => {
   console.log(typeof req.body.name);
@@ -95,16 +81,6 @@ const updatePost = asyncCatch(async (req, res, next) => {
     },
   });
 });
-
-const deletePost = asyncCatch(async (req, res, next) => {
-  const post = await Post.findByIdAndDelete(req.params.id);
-  if (!post) return next(new AppError('Invalid id', 400));
-  res.status(204).json({
-    status: 'Success',
-    data: null,
-  });
-});
-
 //Alias route for top 5 more likes and more shares hot posts
 const aliasTop5MoreLikesPosts = (req, res, next) => {
   req.query.limit = 5;
@@ -120,7 +96,12 @@ const aliasTop5MoreSharesPosts = (req, res, next) => {
 };
 
 //! STATISTICS POSTS: BY author
-const getPostsStats = asyncCatch(async (req, res) => {
+const getPostsStats = asyncCatch(async (req, res, next) => {
+  // const plan = await Post.aggregate([
+  //   {
+  //     $match: { author: '64f2dfea184efc6c2d459578' },
+  //   },
+  // ]);
   const plan = await Post.aggregate([
     {
       $group: {
@@ -138,7 +119,7 @@ const getPostsStats = asyncCatch(async (req, res) => {
     {
       $project: {
         _id: 0,
-        name: '$_id',
+        author: '$_id',
         totalLikes: 1,
         totalShares: 1,
         posts: 1,
@@ -152,6 +133,8 @@ const getPostsStats = asyncCatch(async (req, res) => {
       $limit: 10,
     },
   ]);
+
+  console.log(plan);
   res.status(200).json({
     status: 'Success',
     results: plan.length,
@@ -172,4 +155,7 @@ module.exports = {
   aliasTop5MoreLikesPosts,
   aliasTop5MoreSharesPosts,
   getPostsStats,
+  setUserId,
+  checkUserId,
+  calcViewer,
 };

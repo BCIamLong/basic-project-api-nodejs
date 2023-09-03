@@ -27,18 +27,18 @@ const sendErrorsHandleProd = (err, res) => {
   });
 };
 
-const duplicateErrorHandler = (err) => {
-  return new AppError(`${Object.keys(err.keyValue)[0]} was exists `, 400);
-};
-const validationErrorHandler = (err) => {
-  return new AppError(
+const duplicateErrorHandler = err =>
+  new AppError(`${Object.keys(err.keyValue)[0]} was exists `, 400);
+
+const validationErrorHandler = err =>
+  new AppError(
     `${Object.values(err.errors)
-      .map((el) => el.message)
+      .map(el => el.message)
       .join('. ')}`,
-    400
+    400,
   );
-};
-const castErrorHandler = (err) =>
+
+const castErrorHandler = err =>
   new AppError(`Invalid ${err.path}: ${err.value}`, 400);
 
 const JWTErrorHandler = () =>

@@ -9,6 +9,9 @@ const {
   getUserByCity,
   updateMe,
   deleteMe,
+  setCurrentUserId,
+  getMe,
+  // setActionGetUser,
 } = require('../controllers/userController');
 const {
   signup,
@@ -17,19 +20,31 @@ const {
   resetPassword,
   updatePassword,
   protect,
+  restrictTo,
+  logout,
 } = require('../controllers/authController');
+const postRouter = require('./postRoutes');
 
 const router = express.Router();
 
-router.patch('/update-me', protect, updateMe);
-router.delete('/delete-me', protect, deleteMe);
-
-router.patch('/update-password', protect, updatePassword);
+router.use('/:userId/posts', postRouter);
 router.post('/forgot-password', forgotPassword);
 router.patch('/reset-password/:token', resetPassword);
-
 router.post('/signup', signup);
 router.post('/login', login);
+
+router.use(protect); //! routes after this be logged in to get access
+
+router.get('/logout', logout);
+router
+  .route('/me')
+  .get(setCurrentUserId, getMe)
+  .patch(updateMe)
+  .delete(deleteMe);
+// router.patch('/update-me', protect, updateMe);
+// router.delete('/delete-me', protect, deleteMe);
+
+router.patch('/update-password', protect, updatePassword);
 
 //Alias top 3 users hot
 router.route('/top-3-hot-users').get(getAllUsers);
@@ -38,6 +53,8 @@ router.route('/top-3-hot-users').get(getAllUsers);
 router.route('/city-users/:city').get(getUserByCity);
 
 // router.param("id", checkID);
+
+router.use(restrictTo('admin')); //! routes after this only for admin
 
 router.route('/').get(getAllUsers).post(createUser);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);

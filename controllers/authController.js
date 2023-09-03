@@ -73,7 +73,7 @@ const login = asyncCatch(async (req, res, next) => {
 });
 
 const protect = asyncCatch(async (req, res, next) => {
-  console.log(req.headers);
+  // console.log(req.headers);
   if (!req.headers.authorization?.startsWith('Bearer'))
     return next(
       new AppError('You dont loggin, please login to get access ', 401),
@@ -107,6 +107,16 @@ const protect = asyncCatch(async (req, res, next) => {
   next();
 });
 
+//* logout: we will delete bearer token and cookie in the real time we only delete cookie because we use token from cookie, bearer token only for development
+const logout = asyncCatch(async (req, res, next) => {
+  delete req.headers.authorization;
+  res.clearCookie('jwt').status(200).json({
+    status: 'success',
+    message: 'Logout success',
+    token: '',
+  });
+});
+
 /**
  * Allow user has allow role to perform this action like admin, manager,...
  *
@@ -119,7 +129,9 @@ const restrictTo =
   (...roles) =>
   (req, res, next) => {
     if (!roles.includes(req.user.role))
-      return next(new AppError('You dont have permission to perfirm this'));
+      return next(
+        new AppError('You dont have permission to perform this', 403),
+      );
 
     next();
   };
@@ -222,4 +234,5 @@ module.exports = {
   resetPassword,
   restrictTo,
   updatePassword,
+  logout,
 };
