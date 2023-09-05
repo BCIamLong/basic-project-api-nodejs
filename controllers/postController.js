@@ -144,6 +144,26 @@ const getPostsStats = asyncCatch(async (req, res, next) => {
   });
 });
 
+// const setAroundUsers = asyncCatch(async (req, res, next) => {
+//   req.aroundUsers = aroundUsers;
+// });
+
+const getPostsAroundUser = asyncCatch(async (req, res, next) => {
+  const aroundPostsPromises = req.aroundUsers.map(user =>
+    Post.find({ author: user._id }),
+  );
+  const aroundPosts = await Promise.all(aroundPostsPromises);
+  const formatAroundPosts = aroundPosts.flat();
+
+  res.json({
+    status: 'success',
+    results: formatAroundPosts.length,
+    data: {
+      data: formatAroundPosts,
+    },
+  });
+});
+
 module.exports = {
   getAllPosts,
   createPost,
@@ -158,4 +178,5 @@ module.exports = {
   setUserId,
   checkUserId,
   calcViewer,
+  getPostsAroundUser,
 };

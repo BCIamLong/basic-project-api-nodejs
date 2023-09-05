@@ -8,7 +8,7 @@ const { sendEmail } = require('../utils/email');
 
 const signToken = user =>
   jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
+    expiresIn: process.env.JWT_EXPiRES_IN,
   });
 
 const sendJWT = (res, statusCode, user) => {
@@ -110,7 +110,7 @@ const protect = asyncCatch(async (req, res, next) => {
 //* logout: we will delete bearer token and cookie in the real time we only delete cookie because we use token from cookie, bearer token only for development
 const logout = asyncCatch(async (req, res, next) => {
   delete req.headers.authorization;
-  res.clearCookie('jwt').status(200).json({
+  res.clearCookie('jwt').status(204).json({
     status: 'success',
     message: 'Logout success',
     token: '',

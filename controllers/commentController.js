@@ -38,7 +38,7 @@ const setUserPostId = asyncCatch(async (req, res, next) => {
     author: userId,
     post: postId,
   });
-  if (checkLimitedUserComment.length > 3)
+  if (checkLimitedUserComment.length >= 3)
     return next(new AppError('You only comment 3 times on a post', 403));
 
   req.body = {

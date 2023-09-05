@@ -155,6 +155,78 @@ const deleteMe = asyncCatch(async (req, res, next) => {
     data: null,
   });
 });
+// location: {
+//   type: {
+//     type: String,
+//     default: 'Point',
+//     enum: ['Point'],
+//   },
+//   coordinates: [Number],
+//   address: String,
+// },
+const setCurrentLocation = asyncCatch(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  if (user.location.coordinates)
+    return next(new AppError('You turned on location', 400));
+  // console.log(req.body.coordinates);
+  const [lat, lng] = req.body.coordinates;
+  req.body = {
+    location: {
+      type: req.body.type,
+      coordinates: [lng, lat],
+      address: req.body.address,
+    },
+  };
+
+  next();
+});
+// const checkCurrentLocation = asyncCatch(async (req, res, next) => {
+//   const user = await User.findById(req.user.id);
+//   if (user.location.coordinates.length === 0)
+//     return next(new AppError('You dont turn on your location yet', 400));
+//   req.body = { location: undefined };
+//   next();
+// });
+
+const turnOnCurrentLocation = updateOne(User);
+const turnOffCurrentLocation = asyncCatch(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  if (!user.location.coordinates)
+    return next(new AppError('You dont turn on your location yet', 400));
+  user.location = undefined;
+  await user.save({ validateBeforeSave: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
+const getAroundUsers = asyncCatch(async (req, res, next) => {
+  if (!req.user.location.coordinates)
+    return next(
+      new AppError('Please turn on your location to perform this feature', 400),
+    );
+  const [lng, lat] = req.user.location.coordinates;
+  const radius = 300 / 3963.2; // mi unit if it km unit you need divide to 6371 km
+  const aroundUsers = await User.find({
+    location: {
+      $geoWithin: { $centerSphere: [[lng, lat], radius] },
+    },
+    _id: { $ne: req.user.id },
+  }).select('-role -joinedAt');
+
+  if (req.url === '/around-posts') {
+    req.aroundUsers = aroundUsers;
+    return next();
+  }
+  res.json({
+    status: 'success',
+    data: {
+      data: aroundUsers,
+    },
+  });
+});
 
 module.exports = {
   getAllUsers,
@@ -169,4 +241,9 @@ module.exports = {
   // setActionGetUser,
   setCurrentUserId,
   getMe,
+  turnOnCurrentLocation,
+  setCurrentLocation,
+  turnOffCurrentLocation,
+  // checkCurrentLocation,
+  getAroundUsers,
 };

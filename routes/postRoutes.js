@@ -14,31 +14,31 @@ const {
   setUserId,
   checkUserId,
   calcViewer,
+  getPostsAroundUser,
 } = require('../controllers/postController');
 const { protect, restrictTo } = require('../controllers/authController');
+const { getAroundUsers } = require('../controllers/userController');
 
 const router = express.Router({ mergeParams: true });
 
 router.use('/:postId/comments', commentRouter);
 
 router.get('/', checkUserId, getAllPosts);
-
-router.route('/:id').get(calcViewer, getPost);
-
-router.use(protect); //! routes after this be logged in to get access
-
-//Alias route
-//1,top 5 more likes posts
-// router.get('/top-5-more-likes-posts', aliasTop5MoreLikesPosts, getAllPosts);
 router
   .route('/top-5-more-likes-posts')
   .get(aliasTop5MoreLikesPosts, getAllPosts);
-
-//2, top 5 more share posts
 router
   .route('/top-5-more-shares-posts')
   .get(aliasTop5MoreSharesPosts, getAllPosts);
 // router.param("id", checkID);
+router.route('/:id').get(calcViewer, getPost);
+
+router.use(protect); //! routes after this be logged in to get access
+
+router.get('/around-posts', getAroundUsers, getPostsAroundUser);
+//Alias route
+//1,top 5 more likes posts
+// router.get('/top-5-more-likes-posts', aliasTop5MoreLikesPosts, getAllPosts);
 
 //Statistics of post by author
 

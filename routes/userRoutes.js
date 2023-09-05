@@ -11,6 +11,11 @@ const {
   deleteMe,
   setCurrentUserId,
   getMe,
+  turnOnCurrentLocation,
+  setCurrentLocation,
+  turnOffCurrentLocation,
+  getAroundUsers,
+  // checkCurrentLocation,
   // setActionGetUser,
 } = require('../controllers/userController');
 const {
@@ -35,7 +40,16 @@ router.post('/login', login);
 
 router.use(protect); //! routes after this be logged in to get access
 
-router.get('/logout', logout);
+router.get('/around-users', getAroundUsers);
+router.patch(
+  '/turn-on-current-location',
+  setCurrentUserId,
+  setCurrentLocation,
+  turnOnCurrentLocation,
+);
+router.delete('/turn-off-current-location', turnOffCurrentLocation);
+
+router.delete('/logout', logout);
 router
   .route('/me')
   .get(setCurrentUserId, getMe)

@@ -62,9 +62,7 @@ const createOne = Model =>
 //   });
 
 const checkAliasStatsRoutes = id =>
-  id === 'top-5-more-likes-posts' ||
-  id === 'top-5-more-shares-posts' ||
-  id === 'posts-stats';
+  id === 'posts-stats' || id === 'around-posts';
 
 const getOne = Model =>
   asyncCatch(async (req, res, next) => {

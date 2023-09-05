@@ -114,7 +114,10 @@ postSchema.pre('find', function (next) {
   // console.log('This is query middleware');
 
   // this.limit(3); limit() dont use for find and update so it'll error notice when we manipulate more events in the same middleware
-  this.populate({ path: 'author', select: 'name username photo' });
+  this.select('-__v').populate({
+    path: 'author',
+    select: 'name username photo',
+  });
   next();
 });
 

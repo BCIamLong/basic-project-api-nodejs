@@ -53,16 +53,16 @@ const userSchema = new mongoose.Schema(
         message: 'Confirm password not correct, please check and try again',
       },
     },
-    address: {
-      street: String,
-      suite: String,
-      city: String,
-      zipcode: String,
-      geo: {
-        lat: String,
-        lng: String,
-      },
-    },
+    // address: {
+    //   street: String,
+    //   suite: String,
+    //   city: String,
+    //   zipcode: String,
+    //   geo: {
+    //     lat: String,
+    //     lng: String,
+    //   },
+    // },
     phone: {
       type: String,
       required: [true, 'User must have a phone number'],
@@ -100,11 +100,21 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
+    location: {
+      type: {
+        type: String,
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+    },
   },
   {
     // toJSON: { virtuals: true },
   },
 );
+
+userSchema.index({ location: '2dsphere' });
 
 userSchema.methods.checkPassword = async function (currentPwd, hashPwd) {
   return await bcrypt.compare(currentPwd, hashPwd);
