@@ -27,7 +27,7 @@ app.set('trust proxy', ip => {
   return false;
 });
 
-app.use(compression({ level: process.env.COMPRESSION_LEVEL }));
+app.use(compression({ level: +process.env.COMPRESSION_LEVEL }));
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
