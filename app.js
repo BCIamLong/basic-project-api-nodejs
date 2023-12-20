@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const routerPosts = require('./routes/postRoutes');
 const routerUsers = require('./routes/userRoutes');
@@ -13,6 +14,8 @@ const AppError = require('./utils/appError');
 const errorHanler = require('./middlewares/error');
 
 const app = express();
+
+app.use(compression({ level: process.env.COMPRESSION_LEVEL }));
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));

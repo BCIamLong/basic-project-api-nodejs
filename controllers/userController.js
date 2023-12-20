@@ -100,7 +100,7 @@ const checkReqBodyStringType = (req, res, next) => {
 //3, find with this element use condition
 const getUserByCity = asyncCatch(async (req, res) => {
   const { city } = req.params;
-  console.log(city);
+  // console.log(city);
   const users = await User.aggregate([
     {
       $project: {

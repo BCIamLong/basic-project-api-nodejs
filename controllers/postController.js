@@ -67,7 +67,7 @@ const checkReqBodyStringType = (req, res, next) => {
 };
 
 const updatePost = asyncCatch(async (req, res, next) => {
-  console.log(typeof req.body.name);
+  // console.log(typeof req.body.name);
   //The schema validate doesn't check type for String in this case i set name = 1(number) but it's still pass so to do it you need create middleware to check for this
   const post = await Post.findByIdAndUpdate(req.params.id, req.body, {
     returnDocument: 'after',
@@ -134,7 +134,7 @@ const getPostsStats = asyncCatch(async (req, res, next) => {
     },
   ]);
 
-  console.log(plan);
+  // console.log(plan);
   res.status(200).json({
     status: 'Success',
     results: plan.length,

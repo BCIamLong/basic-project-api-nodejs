@@ -26,11 +26,11 @@ ob1.name = {
   x: 'a',
   t: 's',
 };
-console.log(ob1);
+// console.log(ob1);
 
 const time = new Date().toLocaleTimeString('en-US', {
   hour: 'numeric',
   minute: '2-digit',
 });
 
-console.log(time);
+// console.log(time);

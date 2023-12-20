@@ -14,7 +14,7 @@ export const authAccount = async (type, data) => {
       url,
       data,
     });
-    console.log(res);
+    // console.log(res);
 
     if (res.data?.status === 'success') {
       showAlert('success', 'Login successfully');

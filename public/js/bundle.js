@@ -1,22 +1,22 @@
-/* eslint-disable */ /*eslint-disable */ /* eslint-disable */ const $59c537d2d36f11c6$var$hideAlert = ()=>{
+/* eslint-disable */ /*eslint-disable */ /* eslint-disable */ const $2f76aec48001c457$var$hideAlert = ()=>{
     const alertEl = document.querySelector(".alert");
     const alertParent = alertEl?.parentNode;
     alertParent?.removeChild(alertEl);
 };
-const $59c537d2d36f11c6$export$de026b00723010c1 = (type, msg)=>{
-    $59c537d2d36f11c6$var$hideAlert();
+const $2f76aec48001c457$export$de026b00723010c1 = (type, msg)=>{
+    $2f76aec48001c457$var$hideAlert();
     const alertEl = document.createElement("div");
     alertEl.innerHTML = msg;
     alertEl.classList.add("alert");
     alertEl.classList.add(`alert--${type}`);
     document.querySelector("body").appendChild(alertEl);
     window.setTimeout(()=>{
-        $59c537d2d36f11c6$var$hideAlert();
+        $2f76aec48001c457$var$hideAlert();
     }, 3000);
 };
 
 
-const $a9dfb4b68c783254$export$1ca8632be81e33f = async (type, data)=>{
+const $607fd9e6f90f6f35$export$1ca8632be81e33f = async (type, data)=>{
     try {
         document.querySelector(".btn--form").classList.add("disable-el");
         const url = type === "login" ? "http://127.0.0.1:3100/api/v1/users/login" : "http://127.0.0.1:3100/api/v1/users/signup";
@@ -25,9 +25,9 @@ const $a9dfb4b68c783254$export$1ca8632be81e33f = async (type, data)=>{
             url: url,
             data: data
         });
-        console.log(res);
+        // console.log(res);
         if (res.data?.status === "success") {
-            (0, $59c537d2d36f11c6$export$de026b00723010c1)("success", "Login successfully");
+            (0, $2f76aec48001c457$export$de026b00723010c1)("success", "Login successfully");
             window.setTimeout(()=>{
                 location.assign("/");
                 document.querySelector(".btn--form").classList.remove("disable-el");
@@ -35,13 +35,13 @@ const $a9dfb4b68c783254$export$1ca8632be81e33f = async (type, data)=>{
         }
     } catch (err) {
         console.log(err);
-        (0, $59c537d2d36f11c6$export$de026b00723010c1)("error", err.response?.data.message);
+        (0, $2f76aec48001c457$export$de026b00723010c1)("error", err.response?.data.message);
         document.querySelector(".btn--form").classList.remove("disable-el");
     }
 };
 
 
-/*eslint-disable */ const $efffc4d722698711$export$348d584e223bdf1b = ()=>{
+/*eslint-disable */ const $d782502db626ddad$export$348d584e223bdf1b = ()=>{
     const popupEl = document.createElement("div");
     popupEl.className = "popup flex flex--direct-col popup--user-active";
     popupEl.innerHTML = `<a class="popup-link" href="#">Add an existing account</a>
@@ -49,13 +49,13 @@ const $a9dfb4b68c783254$export$1ca8632be81e33f = async (type, data)=>{
     document.querySelector(".nav-item--user").appendChild(popupEl);
     document.querySelector(".container").classList.add("popup--user-hide");
 };
-const $efffc4d722698711$export$bba5038aab73375b = ()=>{
+const $d782502db626ddad$export$bba5038aab73375b = ()=>{
     const popupEl = document.querySelector(".popup");
     const parentEl = popupEl?.parentNode;
     parentEl?.removeChild(popupEl);
     document.querySelector(".container").classList.remove("popup--user-hide");
 };
-const $efffc4d722698711$export$56a70b10aa80a56e = ()=>{
+const $d782502db626ddad$export$56a70b10aa80a56e = ()=>{
     const user = JSON.parse(document.querySelector(".account").dataset.user);
     // console.log(user);
     const birthday = `${new Date(user.joinedAt).toLocaleDateString("en-US", {
@@ -111,13 +111,13 @@ const $efffc4d722698711$export$56a70b10aa80a56e = ()=>{
     document.querySelector("body").appendChild(popupEl);
     document.querySelector(".container").classList.add("show-popup");
 };
-const $efffc4d722698711$export$988938cd3a7d385f = ()=>{
+const $d782502db626ddad$export$988938cd3a7d385f = ()=>{
     const popupEl = document.querySelector(".profile-popup");
     const parentEl = popupEl?.parentNode;
     parentEl?.removeChild(popupEl);
     document.querySelector(".container").classList.remove("show-popup");
 };
-const $efffc4d722698711$export$7eddb279b5f3c768 = ()=>{
+const $d782502db626ddad$export$7eddb279b5f3c768 = ()=>{
     const user = JSON.parse(document.querySelector(".account").dataset.user);
     const changedAt = `${new Date(user.passwordChangedAt).toLocaleDateString("en-US", {
         month: "long",
@@ -163,7 +163,7 @@ const $efffc4d722698711$export$7eddb279b5f3c768 = ()=>{
     document.querySelector("body").appendChild(popupEl);
     document.querySelector(".container").classList.add("show-popup");
 };
-const $efffc4d722698711$export$33071748e284fe9e = ()=>{
+const $d782502db626ddad$export$33071748e284fe9e = ()=>{
     const popupEl = document.querySelector(".profile-popup");
     const parentEl = popupEl?.parentNode;
     parentEl?.removeChild(popupEl);
@@ -172,7 +172,7 @@ const $efffc4d722698711$export$33071748e284fe9e = ()=>{
 
 
 /* eslint-disable */ 
-const $87afeb44f8de16d1$export$10a5d300cff42cf9 = async (type, data)=>{
+const $7997fb47429082d3$export$10a5d300cff42cf9 = async (type, data)=>{
     try {
         if (type === "data") document.querySelector(".btn--profile-save").classList.add("disable-el");
         else document.querySelector(".btn--settings-save").classList.add("disable-el");
@@ -183,7 +183,7 @@ const $87afeb44f8de16d1$export$10a5d300cff42cf9 = async (type, data)=>{
             data: data
         });
         if (res.data.status === "success") {
-            (0, $59c537d2d36f11c6$export$de026b00723010c1)("success", `Update your ${type} successfully`);
+            (0, $2f76aec48001c457$export$de026b00723010c1)("success", `Update your ${type} successfully`);
             if (type === "data") {
                 document.querySelector(".btn--profile-save").classList.remove("disable-el");
                 return window.setTimeout(()=>location.reload(true), 1000);
@@ -194,24 +194,24 @@ const $87afeb44f8de16d1$export$10a5d300cff42cf9 = async (type, data)=>{
             document.querySelector(".btn--settings-save").classList.remove("disable-el");
         }
     } catch (err) {
-        (0, $59c537d2d36f11c6$export$de026b00723010c1)("error", err.response?.data.message);
+        (0, $2f76aec48001c457$export$de026b00723010c1)("error", err.response?.data.message);
         if (type === "data") return document.querySelector(".btn--profile-save").classList.remove("disable-el");
         document.querySelector(".btn--settings-save").classList.remove("disable-el");
     }
 };
 
 
-const $03bf6f76a0c1a4cd$var$mainEL = document.querySelector("main");
-const $03bf6f76a0c1a4cd$var$sidebarEl = document.querySelector("aside");
-const $03bf6f76a0c1a4cd$var$containerEl = document.querySelector(".container");
-const $03bf6f76a0c1a4cd$var$postCardEls = document.querySelectorAll(".post-card");
-const $03bf6f76a0c1a4cd$var$backBtn = document.querySelector(".btn--back");
-const $03bf6f76a0c1a4cd$var$userBtn = document.querySelector(".nav-item--user button");
-const $03bf6f76a0c1a4cd$var$editProfileBtn = document.querySelector(".btn--edit-profile");
+const $ba584a4f51330b8f$var$mainEL = document.querySelector("main");
+const $ba584a4f51330b8f$var$sidebarEl = document.querySelector("aside");
+const $ba584a4f51330b8f$var$containerEl = document.querySelector(".container");
+const $ba584a4f51330b8f$var$postCardEls = document.querySelectorAll(".post-card");
+const $ba584a4f51330b8f$var$backBtn = document.querySelector(".btn--back");
+const $ba584a4f51330b8f$var$userBtn = document.querySelector(".nav-item--user button");
+const $ba584a4f51330b8f$var$editProfileBtn = document.querySelector(".btn--edit-profile");
 // const closeProfileBtn = document.querySelector('.profile .btn--close');
-const $03bf6f76a0c1a4cd$var$loginForm = document.querySelector(".login .form");
-const $03bf6f76a0c1a4cd$var$signupForm = document.querySelector(".signup .form");
-$03bf6f76a0c1a4cd$var$signupForm?.addEventListener("submit", function(e) {
+const $ba584a4f51330b8f$var$loginForm = document.querySelector(".login .form");
+const $ba584a4f51330b8f$var$signupForm = document.querySelector(".signup .form");
+$ba584a4f51330b8f$var$signupForm?.addEventListener("submit", function(e) {
     e.preventDefault();
     alert("hello");
     const name = document.querySelector("#name").value;
@@ -221,7 +221,7 @@ $03bf6f76a0c1a4cd$var$signupForm?.addEventListener("submit", function(e) {
     const password = document.querySelector("#password").value;
     const passwordConfirm = document.querySelector("#passwordConfirm").value;
     console.log(name, email, phone, password, passwordConfirm);
-    (0, $a9dfb4b68c783254$export$1ca8632be81e33f)("signup", {
+    (0, $607fd9e6f90f6f35$export$1ca8632be81e33f)("signup", {
         name: name,
         username: username,
         email: email,
@@ -230,16 +230,16 @@ $03bf6f76a0c1a4cd$var$signupForm?.addEventListener("submit", function(e) {
         phone: phone
     });
 });
-$03bf6f76a0c1a4cd$var$loginForm?.addEventListener("submit", function(e) {
+$ba584a4f51330b8f$var$loginForm?.addEventListener("submit", function(e) {
     e.preventDefault();
     const email = document.querySelector("#email").value;
     const password = document.querySelector("#password").value;
-    (0, $a9dfb4b68c783254$export$1ca8632be81e33f)("login", {
+    (0, $607fd9e6f90f6f35$export$1ca8632be81e33f)("login", {
         email: email,
         password: password
     });
 });
-$03bf6f76a0c1a4cd$var$postCardEls?.forEach((postCardEl)=>{
+$ba584a4f51330b8f$var$postCardEls?.forEach((postCardEl)=>{
     postCardEl.addEventListener("click", function(e) {
         e.preventDefault();
         // alert('hello');
@@ -255,15 +255,15 @@ $03bf6f76a0c1a4cd$var$postCardEls?.forEach((postCardEl)=>{
 //   alert('ok');
 //   hideProfilePopup();
 // });
-$03bf6f76a0c1a4cd$var$editProfileBtn?.addEventListener("click", function(e) {
+$ba584a4f51330b8f$var$editProfileBtn?.addEventListener("click", function(e) {
     e.preventDefault();
     // alert('hello');
-    (0, $efffc4d722698711$export$56a70b10aa80a56e)();
+    (0, $d782502db626ddad$export$56a70b10aa80a56e)();
 });
-$03bf6f76a0c1a4cd$var$userBtn?.addEventListener("click", function(e) {
+$ba584a4f51330b8f$var$userBtn?.addEventListener("click", function(e) {
     e.preventDefault();
     // alert('hello');
-    if (!document.querySelector(".popup")) (0, $efffc4d722698711$export$348d584e223bdf1b)();
+    if (!document.querySelector(".popup")) (0, $d782502db626ddad$export$348d584e223bdf1b)();
 });
 // backBtn?.addEventListener('click', function (e) {
 //   e.preventDefault();
@@ -282,13 +282,13 @@ window.addEventListener("click", function(e) {
         if (document.querySelector("#photo").files[0]) formData.append("photo", document.querySelector("#photo").files[0]);
         console.log(document.querySelector("#backgroundPhoto").files[0]);
         if (document.querySelector("#backgroundPhoto").files[0]) formData.append("backgroundPhoto", document.querySelector("#backgroundPhoto").files[0]);
-        return (0, $87afeb44f8de16d1$export$10a5d300cff42cf9)("data", formData);
+        return (0, $7997fb47429082d3$export$10a5d300cff42cf9)("data", formData);
     }
     if (e.target.closest(".btn--settings-save")) {
         const currentPassword = document.querySelector("#currentPassword").value;
         const password = document.querySelector("#password").value;
         const passwordConfirm = document.querySelector("#passwordConfirm").value;
-        return (0, $87afeb44f8de16d1$export$10a5d300cff42cf9)("password", {
+        return (0, $7997fb47429082d3$export$10a5d300cff42cf9)("password", {
             currentPassword: currentPassword,
             password: password,
             passwordConfirm: passwordConfirm
@@ -300,14 +300,14 @@ window.addEventListener("click", function(e) {
     // * therefore the conditional in this case that the class name of this element is unique
     // * so in this case we can apply closest()
     if (e.target.closest(".profile-icon--close")) {
-        (0, $efffc4d722698711$export$988938cd3a7d385f)();
-        (0, $efffc4d722698711$export$33071748e284fe9e)();
+        (0, $d782502db626ddad$export$988938cd3a7d385f)();
+        (0, $d782502db626ddad$export$33071748e284fe9e)();
         return;
     }
     // if (e.target === document.querySelector('.profile-icon--close'))
     //   return hideProfilePopup();
-    if (e.target === $03bf6f76a0c1a4cd$var$editProfileBtn) return;
-    if (e.target.closest(".btn--edit-settings")) return (0, $efffc4d722698711$export$7eddb279b5f3c768)();
+    if (e.target === $ba584a4f51330b8f$var$editProfileBtn) return;
+    if (e.target.closest(".btn--edit-settings")) return (0, $d782502db626ddad$export$7eddb279b5f3c768)();
     //* use closest() to file the element have class name .profile-popup in this case the pointer-events is disable and so when click on window it's non element
     // * but if we click on this popup it's always closest with .profile-popup right so that how it works
     if (e.target.closest(".profile-popup")) return;
@@ -316,12 +316,12 @@ window.addEventListener("click", function(e) {
     //* use closest() to file the element have class name .popup--user-active nearest
     if (e.target.closest(".popup--user-active")) return;
     // containerEl.classList.remove('.show-popup');
-    (0, $efffc4d722698711$export$bba5038aab73375b)();
-    (0, $efffc4d722698711$export$988938cd3a7d385f)();
-    (0, $efffc4d722698711$export$33071748e284fe9e)();
+    (0, $d782502db626ddad$export$bba5038aab73375b)();
+    (0, $d782502db626ddad$export$988938cd3a7d385f)();
+    (0, $d782502db626ddad$export$33071748e284fe9e)();
 });
 window.addEventListener("load", function() {
-    if ($03bf6f76a0c1a4cd$var$mainEL.clientHeight <= $03bf6f76a0c1a4cd$var$sidebarEl.clientHeight) $03bf6f76a0c1a4cd$var$mainEL.classList.add("main--fix-height");
+    if ($ba584a4f51330b8f$var$mainEL.clientHeight <= $ba584a4f51330b8f$var$sidebarEl.clientHeight) $ba584a4f51330b8f$var$mainEL.classList.add("main--fix-height");
 // const userBG = document.querySelector('.background-photo--profile');
 // const user = document.querySelector('.account').dataset.user;
 // userBG.style.backgroundImage = `linear-gradient(rgb(33, 37, 41, 0.5), rgb(33, 37, 41, 0.5)), url(/imgs/users/${user.backgroundPhoto})`;

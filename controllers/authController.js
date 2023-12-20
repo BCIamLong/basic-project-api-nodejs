@@ -36,7 +36,7 @@ const signup = asyncCatch(async (req, res, next) => {
     phone,
     passwordChangedAt,
   } = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   if (!username || !password || !passwordConfirm || !email || !name)
     return next(new AppError('Please fill all the required fieald', 400));
 
@@ -100,7 +100,7 @@ const isLoggedIn = asyncCatch(async (req, res, next) => {
 });
 
 const isLoggedIn2 = (req, res, next) => {
-  console.log(res.locals.user);
+  // console.log(res.locals.user);
   if (!res.user) return res.redirect('login');
   next();
 };
