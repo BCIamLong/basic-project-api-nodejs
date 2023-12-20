@@ -11,6 +11,9 @@ export const authAccount = async (type, data) => {
       method: 'POST',
       url,
       data,
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     // console.log(res);
 

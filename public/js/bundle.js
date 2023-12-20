@@ -23,7 +23,10 @@ const $607fd9e6f90f6f35$export$1ca8632be81e33f = async (type, data)=>{
         const res = await axios({
             method: "POST",
             url: url,
-            data: data
+            data: data,
+            headers: {
+                "Content-Type": "application/json"
+            }
         });
         // console.log(res);
         if (res.data?.status === "success") {
