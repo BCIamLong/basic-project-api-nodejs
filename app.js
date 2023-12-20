@@ -15,6 +15,18 @@ const errorHanler = require('./middlewares/error');
 
 const app = express();
 
+app.enable('trust proxy');
+
+app.set('trust proxy', ip => {
+  if (
+    ip === '13.228.225.19' ||
+    ip === '18.142.128.26' ||
+    ip === '54.254.162.138'
+  )
+    return true; // trusted IPs
+  return false;
+});
+
 app.use(compression({ level: process.env.COMPRESSION_LEVEL }));
 
 app.set('view engine', 'pug');
