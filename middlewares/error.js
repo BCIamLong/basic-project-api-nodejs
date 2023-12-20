@@ -20,6 +20,7 @@ const sendErrorsHandleDev = (err, req, res) => {
 };
 
 const sendErrorsHandleProd = (err, req, res) => {
+  console.log(err);
   if (req.originalUrl.startsWith('/api')) {
     if (err.isOperational)
       return res.status(err.statusCode).json({
