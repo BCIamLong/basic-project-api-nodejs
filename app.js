@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const routerPosts = require('./routes/postRoutes');
 const routerUsers = require('./routes/userRoutes');
@@ -26,6 +27,9 @@ app.set('trust proxy', ip => {
     return true; // trusted IPs
   return false;
 });
+
+app.use(cors());
+app.options('*', cors());
 
 app.use(compression({ level: +process.env.COMPRESSION_LEVEL }));
 

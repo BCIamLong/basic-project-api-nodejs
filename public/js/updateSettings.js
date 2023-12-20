@@ -9,9 +9,7 @@ export const updateDataSettings = async (type, data) => {
     else
       document.querySelector('.btn--settings-save').classList.add('disable-el');
     const url =
-      type === 'data'
-        ? 'http://127.0.0.1:3100/api/v1/users/me'
-        : 'http://127.0.0.1:3100/api/v1/users/update-password';
+      type === 'data' ? '/api/v1/users/me' : '/api/v1/users/update-password';
 
     const res = await axios({
       method: 'PATCH',

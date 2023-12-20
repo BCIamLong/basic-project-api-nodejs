@@ -6,9 +6,7 @@ export const authAccount = async (type, data) => {
   try {
     document.querySelector('.btn--form').classList.add('disable-el');
     const url =
-      type === 'login'
-        ? 'http://127.0.0.1:3100/api/v1/users/login'
-        : 'http://127.0.0.1:3100/api/v1/users/signup';
+      type === 'login' ? '/api/v1/users/login' : '/api/v1/users/signup';
     const res = await axios({
       method: 'POST',
       url,

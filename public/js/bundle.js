@@ -19,7 +19,7 @@ const $2f76aec48001c457$export$de026b00723010c1 = (type, msg)=>{
 const $607fd9e6f90f6f35$export$1ca8632be81e33f = async (type, data)=>{
     try {
         document.querySelector(".btn--form").classList.add("disable-el");
-        const url = type === "login" ? "http://127.0.0.1:3100/api/v1/users/login" : "http://127.0.0.1:3100/api/v1/users/signup";
+        const url = type === "login" ? "/api/v1/users/login" : "/api/v1/users/signup";
         const res = await axios({
             method: "POST",
             url: url,
@@ -176,7 +176,7 @@ const $7997fb47429082d3$export$10a5d300cff42cf9 = async (type, data)=>{
     try {
         if (type === "data") document.querySelector(".btn--profile-save").classList.add("disable-el");
         else document.querySelector(".btn--settings-save").classList.add("disable-el");
-        const url = type === "data" ? "http://127.0.0.1:3100/api/v1/users/me" : "http://127.0.0.1:3100/api/v1/users/update-password";
+        const url = type === "data" ? "/api/v1/users/me" : "/api/v1/users/update-password";
         const res = await axios({
             method: "PATCH",
             url: url,
