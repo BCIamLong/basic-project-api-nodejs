@@ -163,7 +163,7 @@ const logout = asyncCatch(async (req, res, next) => {
 const restrictTo =
   (...roles) =>
   (req, res, next) => {
-    if (!roles.includes(req.user.role))
+    if (!roles.includes(req.user?.role))
       return next(
         new AppError('You dont have permission to perform this', 403),
       );

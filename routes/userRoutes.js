@@ -34,11 +34,11 @@ const postRouter = require('./postRoutes');
 
 const router = express.Router();
 
+router.post('/signup', signup);
+router.post('/login', login);
 router.use('/:userId/posts', postRouter);
 router.post('/forgot-password', forgotPassword);
 router.patch('/reset-password/:token', resetPassword);
-router.post('/signup', signup);
-router.post('/login', login);
 
 router.use(protect); //! routes after this be logged in to get access
 

@@ -62,12 +62,12 @@ app.use(bodyParser.urlencoded({ limit: '90kb', extended: true }));
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 //router web server
-app.use('/', routerViews);
 
 //router api
-app.use('/api/v1/posts', routerPosts);
 app.use('/api/v1/users', routerUsers);
+app.use('/api/v1/posts', routerPosts);
 app.use('/api/v1/comments', routerComments);
+app.use('/', routerViews);
 
 // handle for not defined route
 app.all('*', (req, res, next) => {
