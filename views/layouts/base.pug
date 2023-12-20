@@ -1,0 +1,102 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='preconnect', href='https://fonts.googleapis.com')
+    link(rel='preconnect', href='https://fonts.gstatic.com', crossorigin='')
+    link(href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', rel='stylesheet')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')
+    link(rel='icon', type="text/x-icon", href='/imgs/favicon.png')
+    link(rel='stylesheet', href='/css/general.css')
+    link(rel='stylesheet', href='/css/style.css')
+    script(type='module', src='https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js')
+    script(nomodule, src='https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js')
+    script(src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js")
+    script(type="module", src="/js/bundle.js" defer) 
+    title= title
+  body
+    block body
+      .container.grid.grid--page
+        block header
+          header.header
+            p.header-heading Home
+            .header-nav.flex
+              button.header-nav-btn.header-nav-btn--fulfill(href='#')
+                | For you
+              button.header-nav-btn(href='#') Following
+
+        include ../partials/_navigation
+
+        block content
+          main.main
+
+        block sidebar
+          .sidebar
+            aside
+              .search-box
+                .search-input.flex
+                  ion-icon.search-icon(name='search-outline')
+                  input.search-field(placeholder='Search', type='text')
+              .subscribe-box
+                h3.heading-tertiary.margin--bottom-sm
+                  | Subscribe to Premium
+                p.subscribe-description
+                  | Subscribe to unlock new features and if eligible, receive a share
+                  | of ads revenue.
+                a.subscribe-link(href='#') Subscribe
+              .trends-box
+                h3.heading-tertiary.margin--bottom-sm.padding--left-sm
+                  | Trends for you
+                ul.trends.flex.flex--direct-col
+                  li.trend
+                    .tren-type.flex
+                      p.trend-category Music &middot; Trending
+                      button.btn.btn--post
+                        ion-icon.trend-icon(name='ellipsis-horizontal')
+                    p.trend-name Pop
+                    p.trend-post-number
+                      span 45k
+                      |  posts
+                  li.trend
+                    .tren-type.flex
+                      p.trend-category Music &middot; Trending
+                      button.btn.btn--post
+                        ion-icon.trend-icon(name='ellipsis-horizontal')
+                    p.trend-name Pop
+                    p.trend-post-number
+                      span 45k
+                      |  posts
+                  li.trend
+                    .tren-type.flex
+                      p.trend-category Music &middot; Trending
+                      button.btn.btn--post
+                        ion-icon.trend-icon(name='ellipsis-horizontal')
+                    p.trend-name Pop
+                    p.trend-post-number
+                      span 45k
+                      |  posts
+                  li
+                    a.trend-link(href='#') Show more
+              .followers-box
+                h3.heading-tertiary.margin--bottom-sm.padding--left-sm
+                  | Who to follow
+                ul.list
+                  li.list-item.flex.flex--justify-sb.flex--align-ct
+                    a.follower-info.flex(href='#')
+                      img.user-photo(src='/imgs/users/default.jpg', alt='User photo')
+                      div
+                        p.follower-name Name
+                        p.follower-username @user_name
+                    button.btn.btn--follow Follow
+                  li.list-item.flex.flex--justify-sb.flex--align-ct
+                    a.follower-info.flex(href='#')
+                      img.user-photo(src='/imgs/users/default.jpg', alt='User photo')
+                      div
+                        p.follower-name Name
+                        p.follower-username @user_name
+                    button.btn.btn--follow Follow
+                  li
+                    a.list-link(href='#') Show more
+
+            include ../partials/_footer

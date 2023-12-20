@@ -1,0 +1,32 @@
+
+mixin postBoxItem(link, icon)
+  li
+    a.post-box-link(href=`${link}`)
+      ion-icon.post-box-icon(name=`${icon}`)
+
+mixin postIconBtn(type, icon, value)
+  - if(type !== '')
+    li
+      button(class=`btn btn--post post--${type}`)
+        ion-icon.post-icon(name=`${icon}`)
+        span= value
+  - else 
+    li
+      button(class="btn btn--post")
+        ion-icon.post-icon(name=`${icon}`)
+
+mixin getDate(date)
+  - const postDate = date
+  - const postDateVal = Date.parse(postDate)
+  - const now = new Date()
+  - if( now > postDate && now <= new Date(postDateVal + 60*1000 )) 
+    span #{postDate.getSeconds()}s
+  - if(now > new Date(postDateVal + 60*1000) && now <= new Date(postDate + 60*60*1000 )) 
+    span #{postDate.getMinutes()}m
+  - if(now > new Date(postDateVal + 60*60*1000) && now <= new Date(postDate + 24*60*60*1000 )) 
+    span #{postDate.getHours()}h
+  - const dateOneYear = Date.parse(new Date(`${postDate.getFullYear()}-01-01T00:00:00`))
+  - if(now > new Date(postDateVal + 24*60*60*1000)  && now <= new Date(dateOneYear + 364*24*60*60*1000) ) 
+    span #{postDate.toLocaleDateString("en-US", {month: 'long', day:'numeric'})}
+  - if(now > new Date( dateOneYear + (365 * 24 * 60 * 60 * 1000)))
+    span #{postDate.toLocaleDateString("en-US", {month: 'long', day:'numeric'})}, #{postDate.getYear()}

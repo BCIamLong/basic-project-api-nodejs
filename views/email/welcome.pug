@@ -1,0 +1,38 @@
+extends base
+
+block content
+  span.preheader= subject
+  table.body(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td &nbsp;
+        td.container
+          .content
+            // START CENTERED WHITE CONTAINER
+            table.main(role='presentation')
+              // START MAIN CONTENT AREA
+              tbody
+                tr
+                  td.wrapper
+                    table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+                      tbody
+                        tr
+                          td
+                            p Hi #{firstName},
+                            p
+                              | Welcome you to our social media, We're excited to have you as part of our community, and we can't wait to embark on this journey together.
+                            table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+                              tbody
+                                tr
+                                  td(align='left')
+                                    table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+                                      tbody
+                                        tr
+                                          td
+                                            a(href=`${url}`, target='_blank') Update your photo
+                            p
+                              | With your involvement, we're one step closer to achieving our goals and making a positive impact.
+                            p Good luck! Hope you have good experience.
+                // END MAIN CONTENT AREA
+                // END CENTERED WHITE CONTAINER
+                // START FOOTER

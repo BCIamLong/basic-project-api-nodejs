@@ -1,0 +1,88 @@
+extends layouts/base
+
+include mixins/_mixinsAccount
+include mixins/_mixinsOverview
+
+block header 
+  header.header.header--account.flex.flex--align-ct
+    button.btn.btn--account.btn--back
+      ion-icon.account-icon(name='arrow-back-outline')
+    div
+      p.header-heading= user.name
+      p.accout--post-num #{posts.length} posts
+
+block content
+  main.main
+    .account(data-user=`${JSON.stringify(user)}`)
+      //
+        <img
+        class="background-photo"
+        src="/imgs/users/background-photo-1.jpg"
+        alt=""
+        />
+      .background-photo(style=`background-image: url(/imgs/users/${user.backgroundPhoto})`)
+      .flex.margin--bottom-md
+        img.account-photo(src=`/imgs/users/${user.photo}`, alt=`${user.name} photo`)
+        button.btn.btn--edit-settings Edit settings
+        button.btn.btn--edit-profile Edit profile
+      .account-info
+        p.account-name= user.name
+        p.accout-username @#{user.username}
+        p.account-birthday
+          ion-icon(name='calendar-outline')
+          - const dateJoin = user.joinedAt.toLocaleDateString('en-US', {month: 'long', year: 'numeric'})
+          span Joined #{dateJoin}
+        a.account-link(href='#')
+          strong 21
+          |  Following
+        a.account-link(href='#')
+          |
+          strong  30
+          |  Followers
+      .account-nav
+        ul.account-options
+          +accountOption('#', 'Posts', 'active')
+          +accountOption('#', 'Replies')
+          +accountOption('#', 'Highlights')
+          +accountOption('#', 'Media')
+          +accountOption('#', 'Likes')
+      .followers-box.followers-box--account
+        h3.heading-tertiary.margin--bottom-sm.padding--left-sm
+          | Who to follow
+        ul.list
+          //- recUser: recommend user
+          each recUser in users 
+            li.list-item.flex.flex--justify-sb.flex--align-ct
+              a.follower-info.flex(href=`/users/${recUser.username}`)
+                img.user-photo(src=`/imgs/users/${recUser.photo}`, alt=`${recUser.name} photo`)
+                div
+                  p.follower-name= recUser.name
+                  p.follower-username @#{recUser.username}
+              button.btn.btn--follow Follow
+          li
+            a.list-link(href='#') Show more
+      .posts
+        each accPost in posts
+          article.post-card.flex(data-id=`${accPost.id}`)
+            a.user-link(href='#')
+              img.user-photo(src=`/imgs/users/${user.photo}`, alt=`${user.name} photo`)
+            .post
+              .post-info.flex
+                .post-author
+                  a.post-author-link(href=`#`)
+                    strong= user.name
+                    |  @#{user.username} &middot; 
+                    +getDate(accPost.createdAt)
+                button.btn.btn--post(href='')
+                  ion-icon.post-icon-options(name='ellipsis-horizontal')
+              .post-title= accPost.title
+              .post-content
+                img.post-img(src=`/imgs/posts/${accPost.image}`, alt=`${accPost.title} image`)
+                ul.post-icons.flex
+                  +postIconBtn('comment', 'chatbox-outline', accPost.commentQuantity)
+                  +postIconBtn('repost', 'sync-outline', accPost.shares)
+                  +postIconBtn('like', 'heart-outline', accPost.likes)
+                  +postIconBtn('view', 'stats-chart-outline', accPost.viewers)
+                  +postIconBtn('', 'share-outline')
+
+          

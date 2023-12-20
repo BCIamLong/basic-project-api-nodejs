@@ -20,6 +20,10 @@ const commentSchema = new mongoose.Schema({
     ref: 'Post',
     required: [true, 'A comment must belong a post'],
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 //* set compound index for post and user for create new comments, when create comment we need query to author and post right so it'll lost more time to go though all author(user id) and post(post id) and this action always occurs everytime and some features also use query with author and post like checkLimitedUserComment,...

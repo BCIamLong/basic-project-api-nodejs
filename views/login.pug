@@ -1,0 +1,22 @@
+
+extends layouts/base
+
+block body
+  .container
+    .login
+      form.form.flex.flex--direct-col
+        h2.heading-secondary.margin--bottom-md Login
+        .form-item
+          label(for='email') Email
+          |  
+          br
+          input#email(type='email', placeholder='longhoang@gmail.com', required='')
+        .form-item
+          label(for='password') Password
+          br
+          input#password(type='password', placeholder='••••••••', minlength='8', required='')
+        button.btn.btn--form(type='submit') Login
+        button.btn.btn--form-outline Forgot password?
+        p.form-related
+          span Don&apos;t have an account?
+          a.form-link(href='/signup')  Sign up

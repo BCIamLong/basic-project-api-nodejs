@@ -1,0 +1,77 @@
+extends layouts/base
+
+include mixins/_mixinsAccount
+include mixins/_mixinsOverview
+
+block header 
+  header.header.header--account.flex.flex--align-ct
+    button.btn.btn--account.btn--back
+      ion-icon.account-icon(name='arrow-back-outline')
+    div
+      p.header-heading= user.name
+      p.accout--post-num #{posts.length} posts
+
+block content
+  main.main
+    .account(data-user=`${JSON.stringify(user)}`)
+      //
+        <img
+        class="background-photo"
+        src="/imgs/users/background-photo-1.jpg"
+        alt=""
+        />
+      .background-photo
+      .flex.margin--bottom-md
+        img.account-photo(src=`/imgs/users/${user.photo}`, alt=`${user.name} photo`)
+        div.account--profile-btns
+          button.btn.btn--profile-icon 
+            <ion-icon name="ellipsis-horizontal"></ion-icon>
+          button.btn.btn--profile-icon 
+            <ion-icon name="mail-outline"></ion-icon>
+          button.btn.btn--profile-follow Follow
+      .account-info
+        p.account-name= user.name
+        p.accout-username @#{user.username}
+        p.account-birthday
+          ion-icon(name='calendar-outline')
+          - const dateJoin = user.joinedAt.toLocaleDateString('en-US', {month: 'long', year: 'numeric'})
+          span Joined #{dateJoin}
+        a.account-link(href='#')
+          strong 21
+          |  Following
+        a.account-link(href='#')
+          |
+          strong  30
+          |  Followers
+      .account-nav
+        ul.account-options
+          +accountOption('#', 'Posts', 'active')
+          +accountOption('#', 'Replies')
+          +accountOption('#', 'Highlights')
+          +accountOption('#', 'Media')
+          +accountOption('#', 'Likes')
+      .posts
+        each accPost in posts
+          article.post-card.flex(data-id=`${accPost.id}`)
+            a.user-link(href='#')
+              img.user-photo(src=`/imgs/users/${user.photo}`, alt=`${user.name} photo`)
+            .post
+              .post-info.flex
+                .post-author
+                  a.post-author-link(href='#')
+                    strong= user.name
+                    |  @#{user.username} &middot; 
+                    +getDate(accPost.createdAt)
+                button.btn.btn--post(href='')
+                  ion-icon.post-icon-options(name='ellipsis-horizontal')
+              .post-title= accPost.title
+              .post-content
+                img.post-img(src=`/imgs/posts/${accPost.image}`, alt=`${accPost.title} image`)
+                ul.post-icons.flex
+                  +postIconBtn('comment', 'chatbox-outline', accPost.commentQuantity)
+                  +postIconBtn('repost', 'sync-outline', accPost.shares)
+                  +postIconBtn('like', 'heart-outline', accPost.likes)
+                  +postIconBtn('view', 'stats-chart-outline', accPost.viewers)
+                  +postIconBtn('', 'share-outline')
+
+          

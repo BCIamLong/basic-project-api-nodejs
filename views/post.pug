@@ -1,0 +1,90 @@
+extends layouts/base
+
+include mixins/_mixinsOverview
+
+block header 
+  p 
+
+block content 
+  main.main.post--detail
+    .post-header.flex
+      span
+      button.btn.btn--post.btn--back
+        ion-icon.post-icon(name='arrow-back-outline')
+      h3.heading-tertiary Post
+    article.post-card.post--detail-card
+      .post
+        .post-detail.flex
+          a.user-link(href=`/users/${post.author.username}`)
+            img.user-photo(src=`/imgs/users/${post.author.photo}`, alt=`${post.author.name} photo`)
+          .post-detail-box
+            .post-info.flex
+              .post-author
+                a.post-author-link(href=`/users/${post.author.username}`)
+                  strong= post.author.name
+                  |  @#{post.author.username} &middot; 
+                  +getDate(post.createdAt)
+              button.btn.btn--post(href='')
+                ion-icon.post-icon-options(name='ellipsis-horizontal')
+            p.post-title Hello today is good day!
+        .post-content
+          img.post-img(src=`/imgs/posts/${post.image}`, alt=`${post.title} image`)
+          .post-related-info
+            // <p class="share-from">From user...</p>
+            p
+              - const time = post.createdAt.toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit'});
+              - const date = post.createdAt.toLocaleDateString('en-US', {month: 'long', day: 'numeric'})
+              - const year = post.createdAt.getFullYear()
+              | #{time} &middot; #{date}, #{year} &middot;
+              |
+              strong= post.viewers
+              |  Views
+          ul.post-icons.post--detail-list.flex
+            +postIconBtn('comment', 'chatbox-outline', post.commentQuantity)
+            +postIconBtn('repost', 'sync-outline', post.shares)
+            +postIconBtn('like', 'heart-outline', post.likes)
+            +postIconBtn('view', 'bookmark-outline', post.viewers)
+            +postIconBtn('', 'share-outline')
+
+        .reply-box.flex
+          a.user-link(href='/account')
+            img.user-photo(src=`/imgs/users/${user.photo}`, alt=`${user.name} photo`)
+          input.reply-input(type='text', placeholder='Post your reply')
+          button.btn.btn--reply Reply
+      - if(post.comments.length !== 0)
+        .comments
+          ul.list
+            each comment in post.comments
+              li.list-item.comment
+                .comment-box.flex
+                  - if(comment.author.username === user.username)
+                    a.user-link(href='/account')
+                      img.user-photo(src=`/imgs/users/${comment.author.photo}`, alt='')
+                  - else
+                    a.user-link(href=`/users/${comment.author.username}`)
+                      img.user-photo(src=`/imgs/users/${comment.author.photo}`, alt='')
+                  div.comment-head
+                    .comment-info.flex
+                      .post-author
+                        - if(comment.author.username === user.username)
+                          a.post-author-link(href='/account')
+                            strong= comment.author.name
+                            |  @#{comment.author.username} &middot;
+                            span 15h
+                        - else
+                          a.post-author-link(href=`/users/${comment.author.username}`)
+                            strong= comment.author.name
+                            |  @#{comment.author.username} &middot;
+                            span 15h
+                          //- +getDate(comment.createdAt)
+                      button.btn.btn--post(href='')
+                        ion-icon.post-icon-options(name='ellipsis-horizontal')
+                    .comment-title= comment.content
+                ul.post-icons.flex
+                  +postIconBtn('comment', 'chatbox-outline', 0)
+                  +postIconBtn('repost', 'sync-outline', 0)
+                  +postIconBtn('like', 'heart-outline', 0)
+                  +postIconBtn('view', 'bookmark-outline', 0)
+                  +postIconBtn('', 'share-outline')
+      - else  
+        p This post doesn't have comment 

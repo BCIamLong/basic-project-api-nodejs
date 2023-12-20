@@ -15,6 +15,8 @@ const {
   setCurrentLocation,
   turnOffCurrentLocation,
   getAroundUsers,
+  uploadUserImages,
+  resizeUserImages,
   // checkCurrentLocation,
   // setActionGetUser,
 } = require('../controllers/userController');
@@ -53,7 +55,7 @@ router.delete('/logout', logout);
 router
   .route('/me')
   .get(setCurrentUserId, getMe)
-  .patch(updateMe)
+  .patch(uploadUserImages, resizeUserImages, updateMe)
   .delete(deleteMe);
 // router.patch('/update-me', protect, updateMe);
 // router.delete('/delete-me', protect, deleteMe);

@@ -1,0 +1,8 @@
+
+mixin accountOption(link, text, type)
+  if type
+    li
+      a.option-link.option-link--active(href=`${link}`)= text
+  else 
+    li
+      a.option-link(href=`${link}`)= text

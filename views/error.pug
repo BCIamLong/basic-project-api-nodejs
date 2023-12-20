@@ -1,0 +1,14 @@
+extends layouts/base
+
+block header 
+  header.header.header--account.flex.flex--align-ct
+    button.btn.btn--account.btn--back
+      ion-icon.account-icon(name='arrow-back-outline')
+    div
+      p.header-heading Error
+
+block content
+  main.main
+    .error-box
+      h3.heading-tertiary.margin--bottom-sm= error.heading
+      p.error-text= error.message

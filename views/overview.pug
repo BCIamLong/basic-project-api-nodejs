@@ -1,0 +1,109 @@
+extends layouts/base
+
+include mixins/_mixinsOverview
+
+block content 
+  main.main
+    .posts-container
+      if user
+        .post-box.flex
+          a.user-link(href='/account')
+            img.user-photo(src=`/imgs/users/${user.photo}`, alt=`${user.name} photo`)
+          .post-box-text
+            input.post-box-input(type='text', placeholder='What is happening?!')
+            .post-box-options.flex
+              ul.post-box-icons.flex
+                +postBoxItem('#', 'image-outline')
+                +postBoxItem('#', 'options-outline')
+                +postBoxItem('#', 'happy-outline')
+                +postBoxItem('#', 'calendar-clear-outline')
+                +postBoxItem('#', 'location-outline')
+              button.post-btn Post
+      .posts
+        each post in posts
+          article.post-card.flex(data-id=`${post._id}`)
+            - const userUrl = (post.author[0].username === user.username) ? '/account': `/users/${post.author[0].username}`
+            a.user-link(href=`${userUrl}`)
+              img.user-photo(src=`/imgs/users/${post.author[0].photo}`, alt=`${post.author[0].name} photo`)
+            .post
+              .post-info.flex
+                .post-author
+                  a.post-author-link(href=`${userUrl}`)
+                    strong #{post.author[0].name}
+                    |  @#{post.author[0].username} &middot;
+                    |
+                    //- ! use | notation to add space in pug
+                    +getDate(post.createdAt)
+                button.btn.btn--post(href='#')
+                  ion-icon.post-icon-options(name='ellipsis-horizontal')
+              .post-title= post.title
+              .post-content
+                img.post-img(src=`/imgs/posts/${post.image}`, alt=`${post.title} image`)
+                ul.post-icons.flex
+                  +postIconBtn('comment', 'chatbox-outline', post.commentQuantity)
+                  +postIconBtn('repost', 'sync-outline', post.shares)
+                  +postIconBtn('like', 'heart-outline', post.likes)
+                  +postIconBtn('view', 'stats-chart-outline', post.viewers)
+                  +postIconBtn('', 'share-outline')
+
+block sidebar 
+  .sidebar
+    aside
+      .search-box
+        .search-input.flex
+          ion-icon.search-icon(name='search-outline')
+          input.search-field(placeholder='Search', type='text')
+      .subscribe-box
+        h3.heading-tertiary.margin--bottom-sm
+          | Subscribe to Premium
+        p.subscribe-description
+          | Subscribe to unlock new features and if eligible, receive a share
+          | of ads revenue.
+        a.subscribe-link(href='#') Subscribe
+      .trends-box
+        h3.heading-tertiary.margin--bottom-sm.padding--left-sm
+          | Trends for you
+        ul.trends.flex.flex--direct-col
+          li.trend
+            .tren-type.flex
+              p.trend-category Music &middot; Trending
+              button.btn.btn--post
+                ion-icon.trend-icon(name='ellipsis-horizontal')
+            p.trend-name Pop
+            p.trend-post-number
+              span 45k
+              |  posts
+          li.trend
+            .tren-type.flex
+              p.trend-category Music &middot; Trending
+              button.btn.btn--post
+                ion-icon.trend-icon(name='ellipsis-horizontal')
+            p.trend-name Pop
+            p.trend-post-number
+              span 45k
+              |  posts
+          li.trend
+            .tren-type.flex
+              p.trend-category Music &middot; Trending
+              button.btn.btn--post
+                ion-icon.trend-icon(name='ellipsis-horizontal')
+            p.trend-name Pop
+            p.trend-post-number
+              span 45k
+              |  posts
+          li
+            a.trend-link(href='#') Show more
+      .followers-box
+        h3.heading-tertiary.margin--bottom-sm.padding--left-sm
+          | Who to follow
+        ul.list
+          each user in users
+            li.list-item.flex.flex--justify-sb.flex--align-ct
+              a.follower-info.flex(href=`/users/${user.username}`)
+                img.user-photo(src=`/imgs/users/${user.photo}`, alt=`${user.name} photo`)
+                div
+                  p.follower-name= user.name
+                  p.follower-username @#{user.name}
+              button.btn.btn--follow Follow
+          li
+            a.list-link(href='#') Show more

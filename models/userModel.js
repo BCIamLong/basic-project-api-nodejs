@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Please fill your email'],
       unique: true,
       validate: [validator.isEmail, 'Email must to email type'],
-      select: false,
+      // select: false,
       //* you can also use regex to validate data
       // match:
       //   /^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|.(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/,
@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema(
     // },
     phone: {
       type: String,
-      required: [true, 'User must have a phone number'],
+      // required: [true, 'User must have a phone number'],
       unique: true,
       validate: [
         validator.isMobilePhone,
@@ -76,7 +76,11 @@ const userSchema = new mongoose.Schema(
     },
     photo: {
       type: String,
-      default: 'default_user_photo.jpg',
+      default: 'default.jpg',
+    },
+    backgroundPhoto: {
+      type: String,
+      default: 'bg-default.jpg',
     },
     website: {
       type: String,
@@ -158,6 +162,13 @@ userSchema.pre('save', async function (next) {
 
 userSchema.pre(/^find/, function (next) {
   this.find({ active: { $ne: false } }).select('-__v');
+  next();
+});
+
+userSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({
+    $match: { active: { $ne: false }, role: { $ne: 'admin' } },
+  });
   next();
 });
 

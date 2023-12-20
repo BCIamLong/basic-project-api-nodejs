@@ -1,7 +1,11 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const User = require('../models/userModel');
+const APIFeature = require('../utils/apiFeatures');
 // const APIFeature = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 const asyncCatch = require('../utils/asyncCatch');
+
 const {
   deleteOne,
   updateOne,
@@ -9,6 +13,51 @@ const {
   getOne,
   getAll,
 } = require('./handlerFactory');
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image')) return cb(null, true);
+
+  cb(new AppError(400, 'Please choose the correct type image'), false);
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter,
+});
+
+const uploadUserImages = upload.fields([
+  { name: 'photo', maxCount: 1 },
+  { name: 'backgroundPhoto', maxCount: 1 },
+]);
+
+const resizeImage = (fileBuffer, fileName, size) =>
+  sharp(fileBuffer)
+    .resize(...size)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/imgs/users/${fileName}`);
+
+const resizeUserImages = asyncCatch(async (req, res, next) => {
+  if (!req.files.photo && !req.files.backgroundPhoto) return next();
+  // console.log(req.body);
+  if (req.files.photo) {
+    req.body.photo = `user-${req.user.id}-${Date.now()}.jpeg`;
+    await resizeImage(req.files.photo[0].buffer, req.body.photo, [500, 500]);
+  }
+
+  if (!req.files.backgroundPhoto) return next();
+
+  req.body.backgroundPhoto = `user-bg-${req.user.id}=${Date.now()}.jpeg`;
+  await resizeImage(
+    req.files.backgroundPhoto[0].buffer,
+    req.body.backgroundPhoto,
+    [2000, 1333],
+  );
+
+  next();
+});
 
 // const setActionGetUser = (req, res, next) => {
 //   req.body.action = 'getUser';
@@ -111,7 +160,13 @@ const filterObject = (ob, ...fields) => {
  * @returns {Function} middlewareFunction - The middleware function
  */
 const updateMe = asyncCatch(async (req, res, next) => {
-  const filteredBody = filterObject(req.body, 'name', 'email');
+  const filteredBody = filterObject(
+    req.body,
+    'name',
+    'email',
+    'photo',
+    'backgroundPhoto',
+  );
 
   const userUpdate = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
@@ -209,12 +264,27 @@ const getAroundUsers = asyncCatch(async (req, res, next) => {
     );
   const [lng, lat] = req.user.location.coordinates;
   const radius = 300 / 3963.2; // mi unit if it km unit you need divide to 6371 km
-  const aroundUsers = await User.find({
+  const query = User.find({
     location: {
       $geoWithin: { $centerSphere: [[lng, lat], radius] },
     },
     _id: { $ne: req.user.id },
-  }).select('-role -joinedAt');
+  }); //.select('-role -joinedAt');
+  //! in mongoose we can't use select() method two times, and if you use two select methods the last one will be used
+
+  const tempUsers = await User.find({
+    //* run this to get count of around users return
+    location: {
+      $geoWithin: { $centerSphere: [[lng, lat], radius] },
+    },
+    _id: { $ne: req.user.id },
+  });
+  const apiFeatures = new APIFeature(query, req.query)
+    .filter()
+    .sort()
+    .select()
+    .pagination(tempUsers.length);
+  const aroundUsers = await apiFeatures.query;
 
   if (req.url === '/around-posts') {
     req.aroundUsers = aroundUsers;
@@ -222,6 +292,7 @@ const getAroundUsers = asyncCatch(async (req, res, next) => {
   }
   res.json({
     status: 'success',
+    results: aroundUsers.length,
     data: {
       data: aroundUsers,
     },
@@ -246,4 +317,6 @@ module.exports = {
   turnOffCurrentLocation,
   // checkCurrentLocation,
   getAroundUsers,
+  uploadUserImages,
+  resizeUserImages,
 };

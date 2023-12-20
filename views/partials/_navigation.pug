@@ -1,0 +1,43 @@
+nav.navigation
+  ul.nav-list.flex.flex--direct-col
+    li.nav-item
+      a.nav-link(href='/')
+        ion-icon.logo(name='logo-electron')
+    li.nav-item
+      a.nav-link(href='/')
+        ion-icon.nav-icon(name='home')
+    li.nav-item
+      a.nav-link(href='#')
+        ion-icon.nav-icon(name='search-outline')
+    li.nav-item
+      a.nav-link(href='#')
+        ion-icon.nav-icon(name='notifications-outline')
+    li.nav-item
+      a.nav-link(href='#')
+        ion-icon.nav-icon(name='mail-outline')
+    li.nav-item
+      a.nav-link(href='#')
+        ion-icon.nav-icon(name='newspaper-outline')
+    li.nav-item
+      a.nav-link(href='#')
+        ion-icon.nav-icon(name='people-outline')
+    li.nav-item
+      a.nav-link(href='#')
+        ion-icon.nav-icon(name='logo-electron')
+    li.nav-item
+      a.nav-link(href='/account')
+        ion-icon.nav-icon(name='person-outline')
+    li.nav-item
+      a.nav-link(href='#')
+        ion-icon.nav-icon(name='ellipsis-horizontal-circle-outline')
+    li.nav-item
+      a.nav-link.nav-link--post(href='#')
+        ion-icon.nav-icon.nav-icon--post(name='add-circle-outline')
+    if user
+      li.nav-item.nav-item--user
+        button.nav-link(href='#')
+          img.user-photo(src=`/imgs/users/${user.photo}`, alt=`${user.name} photo`)
+    else
+      li.nav-item
+        a.nav-link(href='#')
+          img.user-photo(src='/imgs/users/default.jpg', alt='User photo')

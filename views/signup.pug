@@ -1,0 +1,40 @@
+extends layouts/base
+
+block body 
+  .container
+    .signup
+      form.form.flex.flex--direct-col
+        h2.heading-secondary.margin--bottom-md
+          | Sign up new account
+        .form-item
+          label(for='name') Name*
+          |  
+          br
+          input#name(type='text', placeholder='Long Hoang', required)
+        .form-item
+          label(for='username') User name*
+          |  
+          br
+          input#username(type='text', placeholder='longhoang123', required)
+        .form-item
+          label(for='email') Email*
+          |  
+          br
+          input#email(type='email', placeholder='longhoang@gmail.com', required)
+        .form-item
+          label(for='phone') Phone
+          |  
+          br
+          input#phone(type='text', placeholder='0808******')
+        .form-item
+          label(for='password') Password*
+          br
+          input#password(type='password', placeholder='••••••••', minlength='8', required)
+        .form-item
+          label(for='passwordConfirm') Password Confirm*
+          br
+          input#passwordConfirm(type='password', placeholder='••••••••', minlength='8', required)
+        button.btn.btn--form(type='submit') Sing up
+        p.form-related
+          span You had an account?
+          a.form-link(href='/login')  Login

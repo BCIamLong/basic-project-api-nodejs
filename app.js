@@ -1,17 +1,24 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const routerPosts = require('./routes/postRoutes');
 const routerUsers = require('./routes/userRoutes');
 const routerComments = require('./routes/commentRouter');
+const routerViews = require('./routes/viewRouter');
 const AppError = require('./utils/appError');
 const errorHanler = require('./middlewares/error');
 
 const app = express();
 
-app.use(helmet());
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(helmet({ contentSecurityPolicy: false }));
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -29,11 +36,16 @@ app.use(limiter);
 //middleware
 // app.use(express.static(``));
 // app.use(express.json());
+app.use(cookieParser());
 app.use(bodyParser.json({ limit: '90kb' }));
+app.use(bodyParser.urlencoded({ limit: '90kb', extended: true }));
 
 if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
-//router
+//router web server
+app.use('/', routerViews);
+
+//router api
 app.use('/api/v1/posts', routerPosts);
 app.use('/api/v1/users', routerUsers);
 app.use('/api/v1/comments', routerComments);

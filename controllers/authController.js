@@ -4,7 +4,14 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 const asyncCatch = require('../utils/asyncCatch');
-const { sendEmail } = require('../utils/email');
+const Email = require('../utils/email');
+
+const cookieOptions = {
+  httpOnly: true,
+  expires: new Date(
+    Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+  ),
+};
 
 const signToken = user =>
   jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -13,6 +20,7 @@ const signToken = user =>
 
 const sendJWT = (res, statusCode, user) => {
   const token = signToken(user);
+  res.cookie('jwt', token, cookieOptions);
   res.status(statusCode).json({
     status: 'success',
     token,
@@ -28,7 +36,8 @@ const signup = asyncCatch(async (req, res, next) => {
     phone,
     passwordChangedAt,
   } = req.body;
-  if (!username || !password || !passwordConfirm || !email || !name || !phone)
+  console.log(req.body);
+  if (!username || !password || !passwordConfirm || !email || !name)
     return next(new AppError('Please fill all the required fieald', 400));
 
   const newUser = await User.create({
@@ -72,13 +81,37 @@ const login = asyncCatch(async (req, res, next) => {
   sendJWT(res, 200, user);
 });
 
+const isLoggedIn = asyncCatch(async (req, res, next) => {
+  // console.log(req.headers);
+  const token = req.cookies.jwt;
+  if (!token) return next();
+  // if (!token) return res.redirect('/login');
+
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) return next();
+
+  if (currentUser.checkPasswordChangeAfter(decoded.iat)) return next();
+
+  res.locals.user = currentUser;
+  // req.user = currentUser;
+  next();
+});
+
+const isLoggedIn2 = (req, res, next) => {
+  console.log(res.locals.user);
+  if (!res.user) return res.redirect('login');
+  next();
+};
+
 const protect = asyncCatch(async (req, res, next) => {
   // console.log(req.headers);
-  if (!req.headers.authorization?.startsWith('Bearer'))
-    return next(
-      new AppError('You dont loggin, please login to get access ', 401),
-    );
-  const token = req.headers.authorization?.split(' ')[1];
+  // if (!req.headers.authorization?.startsWith('Bearer'))
+  //   return next(
+  //     new AppError('You dont loggin, please login to get access ', 401),
+  //   );
+  const token = req.headers.authorization?.split(' ')[1] || req.cookies.jwt;
   if (!token)
     return next(
       new AppError('You dont loggin, please login to get access ', 401),
@@ -154,10 +187,11 @@ const forgotPassword = asyncCatch(async (req, res, next) => {
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false });
 
-  const message = `You forgot password, click this link to set your password again ${req.protocol}://${req.hostname}:3000/api/v1/users/reset-password/${resetToken}`;
-  const subject = 'Your reset password turn (valid in 12 mins)';
+  const url = `${req.protocol}://${req.hostname}:3000/api/v1/users/reset-password/${resetToken}`;
   try {
-    await sendEmail({ email, message, subject });
+    const emailPwd = new Email(user, url);
+    emailPwd.sendForgotPassword();
+
     res.status(200).json({
       status: 'success',
       message: 'Sent mail to your email',
@@ -235,4 +269,6 @@ module.exports = {
   restrictTo,
   updatePassword,
   logout,
+  isLoggedIn,
+  isLoggedIn2,
 };
