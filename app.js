@@ -30,7 +30,12 @@ app.set('trust proxy', ip => {
   return false;
 });
 
-app.use(cors());
+app.use(
+  cors({
+    origin: '/',
+    credentials: true,
+  }),
+);
 app.options('*', cors());
 
 app.use(compression({ level: +process.env.COMPRESSION_LEVEL }));

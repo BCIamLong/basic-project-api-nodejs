@@ -29,7 +29,7 @@ const sendErrorsHandleProd = (err, req, res) => {
 
     return res.status(500).json({
       status: 'error',
-      err,
+      // err,
       message: 'Something went wrong',
     });
   }

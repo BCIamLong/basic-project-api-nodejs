@@ -13,6 +13,7 @@ export const authAccount = async (type, data) => {
       data,
       headers: {
         'Content-Type': 'application/json',
+        withCredentials: true,
       },
     });
     // console.log(res);
